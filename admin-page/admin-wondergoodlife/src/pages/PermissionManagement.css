@@ -1,0 +1,608 @@
+/* PermissionManagement.css - 권한 관리 페이지 스타일 */
+
+.permission-management {
+  padding: 20px;
+  max-width: 1600px;
+  margin: 0 auto;
+  background: #f9fafb;
+  min-height: 100vh;
+}
+
+.header-section {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+}
+
+.header-content h1 {
+  color: #1e293b;
+  margin: 0 0 10px 0;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.header-content p {
+  color: #6b7280;
+  margin: 0;
+  font-size: 1rem;
+}
+
+.header-controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.create-role-btn, .create-permission-btn, .delete-demo-permissions-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.create-role-btn {
+  background: #3b82f6;
+  color: white;
+}
+
+.create-role-btn:hover {
+  background: #2563eb;
+}
+
+.create-permission-btn {
+  background: #22c55e;
+  color: white;
+}
+
+.create-permission-btn:hover {
+  background: #16a34a;
+}
+
+.delete-demo-permissions-btn {
+  background: #dc2626;
+  color: white;
+}
+
+.delete-demo-permissions-btn:hover {
+  background: #b91c1c;
+}
+
+.selected-user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: #f0f9ff;
+  border: 1px solid #0ea5e9;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.user-label {
+  color: #0369a1;
+  font-weight: 600;
+}
+
+.user-name {
+  color: #1e40af;
+  font-weight: 600;
+}
+
+.user-email {
+  color: #6b7280;
+}
+
+.clear-user-btn {
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.7rem;
+}
+
+.clear-user-btn:hover {
+  background: #dc2626;
+}
+
+.permission-matrix-container {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+}
+
+.permission-matrix-header {
+  margin-bottom: 30px;
+}
+
+.permission-matrix-header h2 {
+  color: #1e293b;
+  margin: 0 0 10px 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.permission-matrix-header p {
+  color: #6b7280;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.permission-table-container {
+  overflow-x: auto;
+  margin-bottom: 40px;
+}
+
+.permission-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+}
+
+.permission-table thead {
+  background: #f8fafc;
+}
+
+.permission-table th {
+  padding: 15px 12px;
+  text-align: center;
+  font-weight: 600;
+  color: #374151;
+  border-bottom: 2px solid #e5e7eb;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.permission-table td {
+  padding: 12px;
+  border-bottom: 1px solid #f3f4f6;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.permission-row:hover {
+  background-color: #f9fafb;
+}
+
+.resource-column {
+  width: 200px;
+  text-align: left !important;
+}
+
+.action-column {
+  width: 120px;
+}
+
+.description-column {
+  width: 250px;
+  text-align: left !important;
+}
+
+.role-column {
+  width: 150px;
+}
+
+.resource-cell {
+  text-align: left !important;
+}
+
+.resource-name {
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 0.9rem;
+}
+
+.action-cell {
+  text-align: center;
+}
+
+.action-name {
+  background: #e0e7ff;
+  color: #3730a3;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.description-cell {
+  text-align: left !important;
+  position: relative;
+}
+
+.description-text {
+  color: #6b7280;
+  font-size: 0.85rem;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.delete-permission-btn {
+  padding: 2px 6px;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  cursor: pointer;
+  background: #ef4444;
+  color: white;
+  transition: all 0.2s ease;
+}
+
+.delete-permission-btn:hover {
+  background: #dc2626;
+}
+
+.role-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.role-actions {
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.edit-role-btn, .delete-role-btn {
+  padding: 2px 6px;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.edit-role-btn {
+  background: #6b7280;
+  color: white;
+}
+
+.edit-role-btn:hover:not(:disabled) {
+  background: #4b5563;
+}
+
+.edit-role-btn:disabled {
+  background: #d1d5db;
+  cursor: not-allowed;
+}
+
+.delete-role-btn {
+  background: #ef4444;
+  color: white;
+}
+
+.delete-role-btn:hover:not(:disabled) {
+  background: #dc2626;
+}
+
+.delete-role-btn:disabled {
+  background: #fecaca;
+  cursor: not-allowed;
+}
+
+.role-name {
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 0.9rem;
+}
+
+.role-badge {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.role-badge.system {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.role-badge.custom {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.permission-checkbox {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.permission-checkbox input[type="checkbox"] {
+  opacity: 0;
+  position: absolute;
+  cursor: pointer;
+}
+
+.checkmark {
+  position: relative;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-color: #f3f4f6;
+  border: 2px solid #d1d5db;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.permission-checkbox:hover .checkmark {
+  background-color: #e5e7eb;
+}
+
+.permission-checkbox input:checked ~ .checkmark {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 6px;
+  top: 2px;
+  width: 6px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.permission-checkbox input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.permission-checkbox input:disabled ~ .checkmark {
+  background-color: #f9fafb;
+  border-color: #e5e7eb;
+  cursor: not-allowed;
+}
+
+.permission-checkbox input:disabled:checked ~ .checkmark {
+  background-color: #9ca3af;
+  border-color: #9ca3af;
+}
+
+.permission-summary {
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 2px solid #e5e7eb;
+}
+
+.permission-summary h3 {
+  color: #1e293b;
+  margin: 0 0 20px 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.summary-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 20px;
+  transition: all 0.2s ease;
+}
+
+.summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.1);
+}
+
+.summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.summary-header h4 {
+  color: #1f2937;
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.summary-content {
+  color: #6b7280;
+}
+
+.permission-count {
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.permission-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.permission-tag {
+  background: #e0e7ff;
+  color: #3730a3;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  color: #6b7280;
+  font-size: 1.1rem;
+}
+
+/* 모달 스타일 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-content h2 {
+  color: #1e293b;
+  margin: 0 0 20px 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"],
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #3b82f6;
+  outline: none;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-group input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.confirm-btn {
+  background: #3b82f6;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.confirm-btn:hover {
+  background: #2563eb;
+}
+
+.cancel-btn {
+  background: #e5e7eb;
+  color: #374151;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.cancel-btn:hover {
+  background: #d1d5db;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .permission-management {
+    padding: 15px;
+  }
+  
+  .header-section,
+  .permission-matrix-container {
+    padding: 20px;
+  }
+  
+  .permission-table-container {
+    overflow-x: auto;
+  }
+  
+  .permission-table {
+    min-width: 600px;
+  }
+  
+  .permission-table th,
+  .permission-table td {
+    padding: 8px 6px;
+    font-size: 0.8rem;
+  }
+  
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .summary-card {
+    padding: 15px;
+  }
+}

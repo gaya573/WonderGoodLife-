@@ -1,0 +1,42 @@
+# Core Framework
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+python-multipart==0.0.6
+
+# Background Tasks & Queue (배치 작업용)
+celery==5.3.6
+redis==5.0.1
+flower==2.0.1
+
+# Database (MySQL)
+sqlalchemy==2.0.25
+pymysql==1.1.0
+cryptography==41.0.7
+
+# Data Processing (Windows 호환 버전)
+pandas>=2.0.0
+openpyxl==3.1.2
+numpy>=1.24.0
+
+# Web Scraping (크롤링용) - Windows 호환
+httpx==0.26.0
+beautifulsoup4==4.12.3
+html5lib==1.1
+playwright==1.41.0
+
+# Validation & Settings - Windows 호환
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+python-dotenv==1.0.0
+
+# JWT Authentication
+PyJWT==2.8.0
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+
+# Logging
+loguru==0.7.2
+
+# Testing
+pytest==7.4.4
+pytest-asyncio==0.23.3

@@ -1,0 +1,51 @@
+/**
+ * StatCard 컴포넌트 스타일
+ */
+
+/* 통계 카드 컨테이너 */
+.stat-card {
+  text-align: center;
+}
+
+/* 통계 값 */
+.stat-value {
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.stat-value-sm {
+  font-size: 1.5rem;
+}
+
+.stat-value-lg {
+  font-size: 1.875rem;
+}
+
+/* 통계 색상 */
+.stat-value-neutral {
+  color: #111827;
+}
+
+.stat-value-primary {
+  color: #3b82f6;
+}
+
+.stat-value-success {
+  color: #10b981;
+}
+
+.stat-value-warning {
+  color: #f59e0b;
+}
+
+.stat-value-error {
+  color: #ef4444;
+}
+
+/* 통계 라벨 */
+.stat-label {
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-weight: 500;
+}

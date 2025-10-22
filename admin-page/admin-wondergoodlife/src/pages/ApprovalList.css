@@ -1,0 +1,261 @@
+/* 승인 대기 목록 페이지 스타일 */
+.approval-list {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header-section {
+  margin-bottom: 2rem;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.header-content h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 0.5rem 0;
+}
+
+.header-content p {
+  color: #6b7280;
+  margin: 0;
+  font-size: 1rem;
+}
+
+.header-controls {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.refresh-btn, .back-btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+}
+
+.refresh-btn {
+  background: #3b82f6;
+  color: white;
+}
+
+.refresh-btn:hover {
+  background: #2563eb;
+}
+
+.back-btn {
+  background: #6b7280;
+  color: white;
+}
+
+.back-btn:hover {
+  background: #4b5563;
+}
+
+/* 테이블 컨테이너 */
+.table-container {
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.approval-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.approval-table th {
+  background: #f9fafb;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 0.875rem;
+}
+
+/* 컬럼 너비 설정 */
+.approval-table th:nth-child(1) { width: 10%; } /* 상태 */
+.approval-table th:nth-child(2) { width: 15%; } /* 버전명 */
+.approval-table th:nth-child(3) { width: 20%; } /* 설명 */
+.approval-table th:nth-child(4) { width: 10%; } /* 생성자 */
+.approval-table th:nth-child(5) { width: 15%; } /* 생성일 */
+.approval-table th:nth-child(6) { width: 8%; }  /* 브랜드 */
+.approval-table th:nth-child(7) { width: 8%; }  /* 모델 */
+.approval-table th:nth-child(8) { width: 8%; }  /* 트림 */
+.approval-table th:nth-child(9) { width: 8%; }  /* 옵션 */
+.approval-table th:nth-child(10) { width: 15%; } /* 액션 */
+
+.approval-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #f3f4f6;
+  vertical-align: middle;
+}
+
+.approval-table tr:hover {
+  background: #f9fafb;
+}
+
+.approval-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* 테이블 컬럼 스타일 */
+.version-name {
+  font-weight: 600;
+  color: #1f2937;
+  min-width: 150px;
+}
+
+.version-description {
+  color: #6b7280;
+  max-width: 200px;
+  word-break: break-word;
+}
+
+.stat-number {
+  text-align: center;
+  font-weight: 600;
+  color: #374151;
+  min-width: 80px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  min-width: 200px;
+}
+
+.action-buttons button {
+  padding: 0.5rem 0.75rem;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.approve-btn {
+  background: #10b981;
+  color: white;
+}
+
+.approve-btn:hover {
+  background: #059669;
+}
+
+.reject-btn {
+  background: #ef4444;
+  color: white;
+}
+
+.reject-btn:hover {
+  background: #dc2626;
+}
+
+.edit-btn {
+  background: #3b82f6;
+  color: white;
+}
+
+.edit-btn:hover {
+  background: #2563eb;
+}
+
+.delete-btn {
+  background: #6b7280;
+  color: white;
+}
+
+.delete-btn:hover {
+  background: #4b5563;
+}
+
+/* 상태 배지 */
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-align: center;
+  min-width: 80px;
+}
+
+/* 빈 메시지 */
+.empty-message {
+  text-align: center;
+  color: #6b7280;
+  font-style: italic;
+  padding: 3rem !important;
+}
+
+/* 로딩 및 에러 메시지 */
+.loading, .error-message {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.125rem;
+}
+
+.loading {
+  color: #6b7280;
+}
+
+.error-message {
+  color: #ef4444;
+  background: #fee2e2;
+  border-radius: 0.5rem;
+  margin: 2rem auto;
+  max-width: 600px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1200px) {
+  .approval-list {
+    padding: 1rem;
+  }
+  
+  .table-container {
+    overflow-x: auto;
+  }
+  
+  .approval-table {
+    min-width: 1000px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .header-controls {
+    justify-content: center;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .action-buttons button {
+    width: 100%;
+  }
+}

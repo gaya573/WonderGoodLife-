@@ -1,0 +1,11 @@
+/**
+ * StatisticsGrid 컴포넌트 스타일
+ */
+
+/* 통계 그리드 컨테이너 */
+.statistics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}

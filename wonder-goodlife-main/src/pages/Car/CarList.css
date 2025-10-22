@@ -1,0 +1,482 @@
+/* CarList Page Styles */
+ 
+.carlist-page {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  font-family: 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* 상단 배너 */
+.carlist-banner {
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(to right, var(--color-primary-dark), var(--color-primary));
+  color: var(--color-white);
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+}
+
+.carlist-banner-content {
+  max-width: var(--max-width);
+  height: 100%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--gutter-xl);
+}
+
+.carlist-banner-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.carlist-banner-title {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  margin: 0;
+}
+
+.carlist-banner-subtitle {
+  font-size: var(--font-size-md);
+  opacity: 0.9;
+  margin: 0;
+}
+
+.carlist-banner-img {
+  height: 120px;
+  object-fit: contain;
+}
+
+/* 본문 컨테이너 */
+.carlist-container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* 상단 섹션 (Breadcrumb + Tab) */
+.carlist-top-section {
+  width: 100%;
+  margin-bottom: var(--spacing-2xl);
+}
+
+/* 메인 레이아웃 */
+.carlist-main-layout {
+  display: flex;
+  gap: var(--spacing-2xl);
+  margin-top: var(--spacing-xl);
+}
+
+/* 왼쪽 필터 패널 */
+.carlist-filter-panel {
+  width: 240px;
+  flex-shrink: 0;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border-medium);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  height: fit-content;
+  box-shadow: var(--shadow-md);
+}
+
+.carlist-filter-section {
+  margin-bottom: var(--spacing-xl);
+}
+
+.carlist-filter-section:last-child {
+  margin-bottom: 0;
+}
+
+/* 차량종류와 연료 섹션은 간격 완전히 없음 */
+.carlist-filter-section:nth-last-child(2) {
+  margin-bottom: 0;
+}
+
+.carlist-filter-section:nth-last-child(2) .carlist-filter-title {
+  margin-bottom: var(--spacing-sm);
+}
+
+.carlist-filter-section:last-child .carlist-filter-title {
+  margin-bottom: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+}
+
+.carlist-filter-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.carlist-filter-title {
+  font-size: 14px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.carlist-filter-title-row .carlist-filter-title {
+  margin: 0;
+}
+
+.carlist-filter-value {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+}
+
+/* 제조사 그리드 (3열) */
+.carlist-manufacturer-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.carlist-manufacturer-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 60px;
+  padding: 8px 4px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border-light);
+  background: var(--color-white);
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.carlist-manufacturer-btn:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--color-primary);
+}
+
+.carlist-manufacturer-btn.active {
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-color: transparent;
+}
+
+.manufacturer-logo {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.manufacturer-name {
+  font-size: 10px;
+  text-align: center;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+/* 필터 그리드 (3열) - 차량종류, 연료 */
+.carlist-filter-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border: 1px solid var(--color-border-light);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* 일반 필터 버튼 */
+.carlist-filter-btn {
+  height: 32px;
+  padding: 6px 4px;
+  border-radius: 0;
+  border: none;
+  border-right: 1px solid var(--color-border-light);
+  border-bottom: 1px solid var(--color-border-light);
+  background: var(--color-white);
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 오른쪽 끝 버튼들 - 오른쪽 테두리 제거 */
+.carlist-filter-btn:nth-child(3n) {
+  border-right: none;
+}
+
+/* 아래쪽 행 버튼들 - 아래 테두리 제거 */
+.carlist-filter-btn:nth-child(n+4) {
+  border-bottom: none;
+}
+
+.carlist-filter-btn:hover {
+  background: var(--color-bg-hover);
+  position: relative;
+  z-index: 1;
+}
+
+.carlist-filter-btn.active {
+  background: var(--color-primary);
+  color: var(--color-white);
+  position: relative;
+  z-index: 1;
+}
+
+/* 범위 입력 (월별 대여료 - 듀얼 슬라이더) */
+.carlist-range-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px 0;
+}
+
+.carlist-dual-range {
+  position: relative;
+  width: 100%;
+  height: 20px;
+}
+
+.carlist-range-input {
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-radius: 2px;
+  background: transparent;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  pointer-events: none;
+}
+
+.carlist-range-input::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 3px;
+  background: var(--color-border-light);
+  border-radius: 2px;
+}
+
+.carlist-range-input::-moz-range-track {
+  width: 100%;
+  height: 3px;
+  background: var(--color-border-light);
+  border-radius: 2px;
+}
+
+.carlist-range-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  cursor: pointer;
+  border: 2px solid var(--color-white);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  pointer-events: auto;
+  position: relative;
+  z-index: 3;
+}
+
+.carlist-range-input::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  cursor: pointer;
+  border: 2px solid var(--color-white);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  pointer-events: auto;
+  position: relative;
+  z-index: 3;
+}
+
+.carlist-range-min {
+  z-index: 2;
+}
+
+.carlist-range-max {
+  z-index: 2;
+}
+
+.carlist-range-labels {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+  font-weight: var(--font-weight-medium);
+  padding: 0 2px;
+}
+
+/* 오른쪽 메인 콘텐츠 */
+.carlist-main {
+  flex: 1;
+}
+
+/* 정렬 및 검색 툴바 */
+.carlist-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-2xl);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* 정렬 드롭다운 */
+.carlist-sort {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.carlist-sort-select {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  padding-right: var(--spacing-2xl);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  outline: none;
+  transition: all var(--transition-fast);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 12px;
+}
+
+.carlist-sort-select:hover {
+  border-color: var(--color-primary);
+}
+
+.carlist-sort-select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(46, 83, 230, 0.1);
+}
+
+/* 검색창 래퍼 */
+.carlist-search-wrapper {
+  flex: 1;
+  max-width: 400px;
+}
+
+/* 차량 카드 그리드 */
+.carlist-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 272px);
+  gap: var(--spacing-xl);
+  justify-content: center;
+}
+
+/* 차량 카드 */
+.carlist-card {
+  background: var(--color-white);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  width: 272px;
+  height: 338px;
+}
+
+.carlist-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+}
+
+.carlist-card-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.carlist-card-content {
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.carlist-card-name {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.carlist-card-price {
+  font-size: var(--font-size-md);
+  color: var(--color-text-tertiary);
+  margin: 0;
+}
+
+.carlist-card-btn {
+  margin: 0 var(--spacing-lg) var(--spacing-lg) var(--spacing-lg);
+  height: var(--btn-height-lg);
+  border-radius: var(--radius-sm);
+  background: var(--color-primary);
+  color: var(--color-white);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  margin-top: auto;
+}
+
+.carlist-card-btn:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.carlist-card-btn:active {
+  transform: translateY(0);
+}
+
+/* 푸터 */
+.carlist-footer {
+  margin-top: var(--section-spacing);
+  background-color: var(--color-footer-bg);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  padding: var(--spacing-2xl) 0;
+}
+
+.carlist-footer-content {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 0 var(--gutter);
+}
+
+.carlist-footer-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  line-height: 1.6;
+}
+
+.carlist-footer-copyright {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  margin-top: var(--spacing-lg);
+}

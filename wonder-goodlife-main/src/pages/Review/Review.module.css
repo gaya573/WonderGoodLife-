@@ -1,0 +1,161 @@
+/* Review 페이지 스타일 */
+
+.reviewPage {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.mainContent {
+  flex-grow: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  width: 100%;
+}
+
+/* 페이지 헤더 */
+.pageHeader {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.pageTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #333;
+  margin: 20px 0;
+  letter-spacing: -0.02em;
+}
+
+/* 리뷰 레이아웃 */
+.reviewLayout {
+  gap: 30px;
+  align-items: start;
+}
+
+.reviewSection {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* 리뷰 그리드 */
+.reviewGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  justify-items: center;
+  margin: 0 auto;
+}
+
+/* 후기 작성 섹션 */
+.writeReviewSection {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.writeReviewButton {
+  background: linear-gradient(135deg, #0062FF 0%, #0052DD 100%);
+  color: #ffffff;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 16px rgba(0, 98, 255, 0.25);
+  letter-spacing: -0.01em;
+}
+
+.writeReviewButton:hover {
+  background: linear-gradient(135deg, #0052DD 0%, #0042CC 100%);
+  box-shadow: 0 8px 24px rgba(0, 98, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+.writeReviewButton:active {
+  transform: translateY(0);
+}
+
+/* 사이드바 */
+.sidebar {
+  position: sticky;
+  top: 100px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1024px) {
+  .reviewLayout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .sidebar {
+    position: static;
+    order: -1;
+  }
+  
+  .reviewGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    justify-items: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .mainContent {
+    padding: 16px;
+  }
+  
+  .pageTitle {
+    font-size: 2rem;
+    margin: 16px 0;
+  }
+  
+  .reviewSection {
+    gap: 20px;
+  }
+  
+  .reviewGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    justify-items: center;
+  }
+  
+  .writeReviewButton {
+    padding: 14px 28px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .mainContent {
+    padding: 12px;
+  }
+  
+  .pageTitle {
+    font-size: 1.5rem;
+    margin: 12px 0;
+  }
+  
+  .reviewGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    justify-items: center;
+  }
+  
+  .writeReviewButton {
+    padding: 12px 24px;
+    font-size: 0.95rem;
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .reviewSection {
+    gap: 16px;
+  }
+}

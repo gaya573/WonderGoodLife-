@@ -1,0 +1,98 @@
+.promo-page { background:#fff; }
+.promo-container { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); }
+
+/* 상단 타이틀/탭 */
+.promo-header { text-align:center; padding: 24px 0 24px; }
+.promo-title { margin:0 0 6px; font-size: 24px; font-weight: var(--font-weight-bold); }
+.promo-sub { margin:0 0 16px; color: var(--color-text-tertiary); font-size: 14px; }
+/* 기본(비활성) 상태 */
+.promo-tab {
+  border: 1.5px solid #002B97;
+  background: #fff;
+  color: #002B97;
+  margin-right: 4px;
+}
+
+.promo-tab:hover {
+  background: rgba(0, 43, 151, 0.08);
+}
+
+/* 선택(active) 상태 */
+.promo-tab.active {
+  background: #002B97;
+  color: #fff;
+  border: 1.5px solid #002B97;
+}
+
+.promo-tab.active:hover {
+  background: #0038C2; /* 약간 밝은 톤으로 피드백 */
+}
+.active { background: #002B97; color:#fff; border-color: #002B97; }
+
+/* Ended mode visuals */
+.ended .promo-tab.active { background:#C9CDD4; border-color:#C9CDD4; color:#2b2b2b; }
+.ended .promo-card { filter: grayscale(1) saturate(.6); opacity:.9; }
+.ended .promo-card-btn { background:#d9d9d9; color:#5e5e5e; cursor: default; }
+
+/* 12-column 느낌의 3열 카드 그리드 */
+.promo-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.promo-card { position:relative; border-radius: 10px; overflow:hidden; background:#fff; box-shadow: var(--shadow-sm); border:1px solid var(--color-border-light); display:flex; flex-direction:column; }
+.promo-card-top { position:relative; }
+.promo-card-top img { display:block; width:100%; height: 170px; object-fit: cover; }
+.promo-ribbon { position:absolute; left:0; top:0; display:flex; gap:8px; align-items:center; padding:8px 10px; }
+.ribbon-title { font-size:12px; color:#fff; letter-spacing: .2px; font-weight: var(--font-weight-bold); }
+.ribbon-badge { font-size:11px; color:#fff; background: rgba(0,0,0,.25); padding:2px 6px; border-radius:999px; border:1px solid rgba(255,255,255,.35); }
+
+/* 카드 바디 */
+.promo-card-body { padding: 12px 14px 0; }
+.promo-card-body h3 { margin:0 0 6px; font-size: 18px; }
+.promo-card-body p { margin:0 0 10px; color: var(--color-text-secondary); font-size: 13px; }
+.promo-card-btn { margin: 0 14px 14px; height: 40px; border:none; border-radius: 8px; background: var(--color-primary); color:#fff; font-weight: var(--font-weight-bold); cursor:pointer; }
+
+/* 테마 색상 (좌상단 리본) */
+.theme-hyundai .promo-ribbon { background: linear-gradient(90deg, #111f4d, #2763ff); }
+.theme-kia .promo-ribbon { background: linear-gradient(90deg, #ff5b55, #ff7b6b); }
+.theme-mercedes .promo-ribbon { background: linear-gradient(90deg, #2c2c2c, #555); }
+.theme-truck .promo-ribbon { background: linear-gradient(90deg, #1d3557, #457b9d); }
+
+/* 하단 더보기 */
+.promo-more { display:flex; justify-content:center; margin: 16px 0 28px; }
+.promo-more-btn { height: 38px; padding:0 16px; border:2px solid #1b3bbf; color:#000; background:#fff; border-radius: 999px; font-size:13px; font-weight: 500; cursor:pointer; }
+
+/* 하단 CTA 배너 */
+.promo-bottom-cta { margin: 18px 0 36px; background: linear-gradient(90deg, #142d8a, #1f4bd1); color:#fff; border-radius: 12px; display:grid; grid-template-columns: 520px 1fr; align-items:center; padding: 20px 24px; gap:24px; }
+.cta-visual { height: 120px; border-radius: 8px; background: transparent; }
+
+/* CTA 우측 컨텐츠 래퍼 */
+.cta-wrap { display:flex; flex-direction:column; gap: 12px; }
+
+/* 헤딩 */
+.cta__heading { text-align:center; font-weight: var(--font-weight-bold); opacity:.95; font-size: 20px; line-height: 1.5; }
+
+/* 폼: 좌측 필드, 우측 버튼 */
+.cta__form { display:flex; align-items:flex-start; gap: 24px; }
+.cta__fields { display:flex; flex-direction:column; gap: 10px; }
+.cta__row { display:flex; align-items:center; gap: 12px; }
+.cta__label { width: 56px; text-align:right; font-size: 14px; color: rgba(255,255,255,.9); }
+.cta__input { height: 44px; border-radius: 8px; border:1px solid rgba(255,255,255,.45); background: rgba(255,255,255,.06); color:#fff; padding: 0 12px; width: 280px; max-width: 100%; }
+.cta__input::placeholder { color: rgba(255,255,255,.85); }
+.cta__actions { flex: 0 0 auto; align-self:flex-start; }
+.cta__submit { width: 160px; height: 98px; border:none; border-radius: 12px; background:#ffe5d6; color:#2b2b2b; font-weight: var(--font-weight-bold); cursor:pointer; }
+/* FAQ (간략 표시, 디자인 시안 요소 확보만) */
+.promo-faq { display:none; }
+@media (max-width: 1080px) {
+  .promo-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .promo-grid { grid-template-columns: 1fr; }
+  .promo-bottom-cta { grid-template-columns: 1fr; padding: 18px; }
+  .cta-visual { display:none; }
+  .cta__form { flex-direction: column; align-items: stretch; gap: 12px; }
+  .cta__fields { width: 100%; }
+  .cta__row { gap: 10px; }
+  .cta__input { width: 100%; }
+  .cta__actions { width: 100%; }
+  .cta__submit { height: 44px; width: 100%; border-radius: 8px; }
+}
+
+

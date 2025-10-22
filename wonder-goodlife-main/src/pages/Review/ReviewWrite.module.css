@@ -1,0 +1,304 @@
+/* ReviewWrite 페이지 스타일 */
+
+.reviewWritePage {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.mainContent {
+  flex-grow: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  width: 100%;
+}
+
+/* 페이지 헤더 */
+.pageHeader {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.pageTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #333;
+  margin: 20px 0;
+  letter-spacing: -0.02em;
+}
+
+/* 작성 레이아웃 */
+.writeLayout {
+
+  align-items: start;
+}
+
+.writeSection {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* 폼 스타일 */
+.reviewForm {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.formLabel {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  letter-spacing: -0.01em;
+}
+
+.formInput,
+.formTextarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #333;
+  background-color: #ffffff;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+/* 지역 선택 2분할 */
+.selectRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.formSelect {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #333;
+  background-color: #ffffff;
+}
+
+.formInput:focus,
+.formTextarea:focus {
+  outline: none;
+  border-color: #0062FF;
+  box-shadow: 0 0 0 3px rgba(0, 98, 255, 0.1);
+}
+
+.formTextarea {
+  min-height: 200px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+/* 별점 스타일 */
+.ratingContainer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stars {
+  display: flex;
+  gap: 4px;
+}
+
+.star {
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.star:hover {
+  transform: scale(1.1);
+}
+
+.filledStar {
+  color: #ffc107;
+  text-shadow: 0 2px 4px rgba(255, 193, 7, 0.3);
+}
+
+.emptyStar {
+  color: #e9ecef;
+}
+
+.ratingText {
+  font-size: 1rem;
+  color: #666;
+  font-weight: 500;
+}
+
+/* 이미지 업로드 영역 */
+.imageUploadArea {
+  width: 100%;
+}
+
+.uploadPlaceholder {
+  width: 100%;
+  height: 120px;
+  border: 2px dashed #ced4da;
+  border-radius: 8px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.uploadPlaceholder:hover {
+  border-color: #0062FF;
+  background-color: #f0f7ff;
+}
+
+.uploadIcon {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.uploadText {
+  font-size: 0.9rem;
+  color: #666;
+  font-weight: 500;
+}
+
+/* 업로드 미리보기 */
+.previewGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.previewItem {
+  position: relative;
+  width: 100%;
+  padding-top: 100%; /* 1:1 */
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f1f3f5;
+  border: 1px solid #e9ecef;
+}
+
+.previewItem img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.previewRemove {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  font-size: 16px;
+  line-height: 24px;
+  cursor: pointer;
+}
+
+/* 작성 가이드 */
+.writeGuide {
+  margin-top: 16px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #0062FF;
+}
+
+.writeGuide h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 12px 0;
+}
+
+.writeGuide ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.writeGuide li {
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.writeGuide li:last-child {
+  margin-bottom: 0;
+}
+
+/* 폼 액션 버튼 */
+.formActions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.cancelButton,
+.submitButton {
+  padding: 14px 32px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  letter-spacing: -0.01em;
+  min-width: 120px;
+}
+
+.cancelButton {
+  background-color: #6c757d;
+  color: #ffffff;
+}
+
+.cancelButton:hover {
+  background-color: #5a6268;
+  transform: translateY(-1px);
+}
+
+.submitButton {
+  background: linear-gradient(135deg, #0062FF 0%, #0052DD 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 98, 255, 0.25);
+}
+
+.submitButton:hover {
+  background: linear-gradient(135deg, #0052DD 0%, #0042CC 100%);
+  box-shadow: 0 6px 20px rgba(0, 98, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+/* 사이드바 */
+.sidebar {
+  position: sticky;
+  top: 100px;
+}
+
+/* 반응형 디자인 */

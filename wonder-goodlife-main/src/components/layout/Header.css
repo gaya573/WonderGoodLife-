@@ -1,0 +1,263 @@
+/* 전체 헤더 */
+.header {
+  background: #fff;
+  width: 100%;
+  position: relative;
+  top: 0;
+  z-index: 1030; /* 상단 고정, 콘텐츠 위 */
+}
+
+/* 상단 로그인/회원가입 */
+.top-bar {
+  border-bottom: 1px solid #f0f0f0;
+  padding: 0.5rem 0;
+}
+
+.top-links {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1.5rem;
+}
+
+.top-links a {
+  color: #666;
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+/* 중간 바: 로고 + 오른쪽 영역 */
+.middle-bar {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* 로고 */
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.logo-section:hover {
+  opacity: 0.8;
+}
+
+.logo-icon {
+  width: 35px;
+  height: 35px;
+  background: #007bff;
+  border-radius: 4px;
+}
+
+.logo-text {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #333;
+}
+
+/* 오른쪽 메뉴 + 검색 전체 묶음 */
+.right-area {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+/* 오른쪽 링크 */
+.right-links {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.right-links a {
+  color: #333;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  white-space: nowrap; /* 단어 줄바꿈 방지 */
+  word-break: keep-all; /* 한국어 단어 분리 방지 */
+  display: inline-block; /* 강제 줄바꿈 방지에 안정적 */
+}
+
+.right-links a:hover {
+  color: #007bff;
+}
+
+/* ✅ 검색바 오른쪽 배치 */
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8f9fa;
+  padding: 0.3rem 0.6rem;
+  border-radius: 20px;
+  border: 1px solid #ddd;
+}
+
+.search-bar input {
+  border: none;
+  outline: none;
+  background-color: #F7F7FB;
+  color: #000;
+  /* background: transparent; */
+  font-size: 0.9rem;
+
+}
+
+
+.search-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: #f0f1f3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  color: #555;
+}
+
+.search-btn:hover {
+  background: #e2e5ea;
+  color: #007bff;
+}
+
+/* 하단 메뉴 */
+.bottom-bar {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.8rem 2rem 0.4rem; /* 옵션과 더 촘촘히 */
+  display: grid;
+  grid-template-columns: 40px 1fr; /* 햄버거(고정폭) + 네비(그리드) */
+  align-items: center;
+  column-gap: 24px; /* 햄버거-메뉴 간격을 옵션과 동일하게 */
+  border-top: 1px solid #f0f0f0;
+}
+
+.nav-links {
+  display: grid;
+  grid-template-columns: 100px 100px 100px 100px 100px 140px; /* 비교·계산과 상담·문의 위치 변경 */
+  column-gap: 24px;
+  width: 100%;
+  justify-items: start; /* 텍스트 왼쪽 정렬 */
+}
+.nav-links a, .nav-links .nav-label { align-self: center; text-align: left; }
+
+.nav-links a {
+  color: #000;
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 500;
+  position: relative;
+  padding-bottom: 4px;
+  transition: color 0.2s ease;
+}
+
+.nav-links a:hover {
+  color: #2E53E6;
+}
+
+.nav-links a.active {
+  color: #2E53E6;
+  font-weight: 600;
+}
+
+.nav-links a.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1.5px; /* 시안처럼 더 얇게 */
+  background-color: #2E53E6;
+}
+
+/* 햄버거 버튼 */
+.hamburger-menu {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #111;
+  background: #fff;
+  border: none;
+  padding: 8px 12px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform .12s ease;
+}
+.hamburger-menu .hamburger-icon {
+  width: 18px;
+  height: 2px;
+  background: #111;
+  position: relative;
+  display: inline-block;
+}
+.hamburger-menu .hamburger-icon::before,
+.hamburger-menu .hamburger-icon::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 18px;
+  height: 2px;
+  background: #111;
+}
+.hamburger-menu .hamburger-icon::before { top: -6px; }
+.hamburger-menu .hamburger-icon::after { top: 6px; }
+.hamburger-menu.active { border-color: #2E53E6; color: #2E53E6; transform: scale(1.06); }
+
+/* 키보드 포커스 표시 */
+.nav-links a:focus-visible, .mega-col a:focus-visible, .hamburger-menu:focus-visible {
+  outline: 2px solid #2E53E6;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* 메가메뉴 */
+.mega-menu {
+  position: absolute; /* 닫힌 상태에서 레이아웃 차지하지 않음 */
+  left: 0;
+  right: 0;
+  top: 100%; /* 헤더 바로 아래 */
+  background: #fff;
+  border-top: 1px solid #f0f0f0;
+  box-shadow: 0 12px 24px rgba(0,0,0,.06);
+  opacity: 0;
+  visibility: hidden; /* 비즈블 0 요구사항 */
+  transform: translateY(-8px);
+  transition: all .2s ease;
+  pointer-events: none; /* 닫힘 시 이벤트 차단 */
+  z-index: 1025;
+}
+.mega-menu.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.mega-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px 34px 16px; /* 좌측 2px 보정 */
+  display: grid;
+  grid-template-columns: 40px 100px 100px 100px 100px 100px 140px; /* 햄버거 스페이서 + 비교·계산과 상담·문의 위치 변경 */
+  column-gap: 24px;
+}
+.mega-col.mega-spacer { pointer-events: none; }
+.mega-col { min-width: 0; }
+.mega-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.mega-col a, .mega-col .disabled-link { color: #444; text-decoration: none;
+  font-weight: 500; font-size: 0.8rem; line-height: 1.4; }
+.mega-col a:hover { color: #2E53E6; }
