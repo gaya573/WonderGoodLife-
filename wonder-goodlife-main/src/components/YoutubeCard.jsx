@@ -3,11 +3,26 @@ import './YoutubeCard.css';
 import channelImage from '../assets/img/youtube/image.png';
 
 const YoutubeCard = () => {
-  // 원더굿라이프 채널의 실제 영상 ID (예시)
-  const videoId = 'dQw4w9WgXcQ'; // 실제 영상 ID로 교체 가능
-  const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+  // 3개의 영상 데이터
+  const videos = [
+    {
+      id: 'dQw4w9WgXcQ',
+      title: '벤츠 마지막 재고 할인!!',
+      subtitle: '10월 역대급 딜의 할인 대방출'
+    },
+    {
+      id: 'jNQXAC9IVRw',
+      title: '10월 최신 현대 기아 출고기',
+      subtitle: '결국 눈물의 재고 떨이..'
+    },
+    {
+      id: 'M7lc1UVf-VE',
+      title: '결국 완판! 신차 나온다고?',
+      subtitle: '폭스바겐 대신 10월엔 아우디?'
+    }
+  ];
 
-  const handleVideoClick = () => {
+  const handleVideoClick = (videoId) => {
     window.open(`https://www.youtube.com/watch?v=${videoId}`, '_blank');
   };
 
@@ -21,63 +36,52 @@ const YoutubeCard = () => {
       <div className="youtube-header">
         {/* 왼쪽: 제목과 부제 */}
         <div className="youtube-title-section">
-          <h2 className="youtube-main-title">원더굿라이프 유튜브</h2>
+          <div className="youtube-title-section-left">
+          <div className="youtube-logo-icon">📺</div>
+           <h2 className="youtube-main-title">원더굿라이프 유튜브</h2>
+        
+          </div>
           <p className="youtube-subtitle">차량 리뷰와 딜을 유튜브에서 생생하게 확인하세요</p>
         </div>
 
- 
+   
       </div>
 
-      {/* 콘텐츠 영역: 영상 + 설명 */}
+      {/* 콘텐츠 영역: 3개 영상 + 설명 */}
       <div className="youtube-content">
-        {/* 왼쪽: 영상 썸네일 */}
-        <div className="video-thumbnail-wrapper" onClick={handleVideoClick}>
-          <img 
-            src={thumbnailUrl} 
-            alt="유튜브 영상 썸네일" 
-            className="video-thumbnail-image"
-          />
-          <div className="video-overlay">
-            <div className="play-button-circle">
-              <div className="play-icon">▶</div>
+        {/* 왼쪽: 3개 영상 썸네일 */}
+        <div className="videos-grid">
+          {videos.map((video, index) => (
+            <div 
+              key={video.id} 
+              className="video-thumbnail-wrapper" 
+              onClick={() => handleVideoClick(video.id)}
+            >
+              <div className="video-thumbnail-placeholder">
+                <div className="placeholder-content">
+                  <div className="placeholder-icon">🎬</div>
+                  <div className="placeholder-text">영상 {index + 1}</div>
+                </div>
+              </div>
+              <div className="video-overlay">
+                <div className="play-button-circle">
+                  <div className="play-icon">▶</div>
+                </div>
+                <div className="video-text-banner">
+                  <div className="video-title-main">{video.title}</div>
+                  <div className="video-title-highlight">{video.subtitle}</div>
+                </div>
+              </div>
             </div>
-            <div className="video-text-banner">
-              <div className="video-title-main">벤츠 마지막 재고 할인!!</div>
-              <div className="video-title-highlight">10월 역대급 딜의 할인 대방출</div>
-            </div>
-          </div>
+          ))}
         </div>
 
-        {/* 오른쪽: 설명 텍스트 */}
-        <div className="channel-description">
-          <div className="channel-info-card">
-            <img 
-              src={channelImage} 
-              alt="원더굿라이프 채널"
-              className="channel-info-image"
-              onClick={handleChannelClick}
-            />
-          </div>
-
-<div className='gray'>
-          <div className="description-intro">유튜브 채널에서는 👇</div>
-          <div className="description-list">
-            <div className="description-item description-spacer"></div>
-            <div className="description-item description-spacer"></div>
-            <div className="description-item">
-              #실시간 특가 차량 정보부터 리얼 출고 후기까지!
-            </div>
-            <div className="description-item">
-              #장기렌트·리스·할부 비교 노하우와 금융 혜택 AtoZ
-            </div>
-            <div className="description-item">
-              #전문가 꿀팁과 고객님의 리얼 인터뷰, 모두 이곳에!
-            </div>
-          </div>
-
-          </div>
-
-        </div>
+      </div>
+      {/* 하단 버튼 */}
+      <div className="youtube-bottom-button">
+        <button className="more-videos-btn" onClick={handleChannelClick}>
+          더많은 차량 할인·팁 영상 보러가기 →
+        </button>
       </div>
     </div>
   );

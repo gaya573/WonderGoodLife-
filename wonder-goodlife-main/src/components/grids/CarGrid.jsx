@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './CarGrid.module.css';
 
-const CarGrid = ({ cars = [], onClickCard, className = '', columns = 4 }) => {
+const CarGrid = ({ cars = [], onClickCard, className = '', columns = 3 }) => {
   return (
     <div className={`${styles.grid} ${className}`.trim()} style={{ ['--cols']: columns }}>
       {cars.map((car, idx) => (

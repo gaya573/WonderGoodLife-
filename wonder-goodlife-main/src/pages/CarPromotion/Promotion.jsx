@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import EstimateModal from '../../components/modals/EstimateModal';
 import Breadcrumb from '../../components/Breadcrumb';
+import EventCard from '../../components/EventCard';
 import { useNavigate } from 'react-router-dom';
 import styles from './Promotion.module.css';
 
@@ -100,17 +101,16 @@ export default function Promotion() {
 
         <div className={styles['promo-grid']}>
           {displayedItems.map((c) => (
-            <article key={c.id} className={`${styles['promo-card']} ${styles[`theme-${c.theme}`]}`}>
-              <div className={styles['promo-card-top']}>
-           
-                <img src={c.img} alt={c.name} />
-              </div>
-              <div className={styles['promo-card-body']}>
-                <h3>{c.name}</h3>
-                <p>{c.desc}</p>
-              </div>
-              <button className={styles['promo-card-btn']} onClick={() => navigate(`/promotion/brands/detail/${c.id}`)}>혜택 상담 받기</button>
-            </article>
+            <EventCard
+              key={c.id}
+              title={c.title}
+              subtitle={c.badge}
+              image={c.img}
+              description={c.desc}
+              theme={c.theme}
+              ended={tab === 'ended'}
+              onClick={() => navigate(`/promotion/brands/detail/${c.id}`)}
+            />
           ))}
         </div>
 

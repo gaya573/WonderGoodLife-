@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import styles from './QuickConsult.module.css';
-import kakoIcon from '../../assets/icon/kako.png';
 import talkIcon from '../../assets/icon/talk.png';
 import naverIcon from '../../assets/icon/naver.png';
 
@@ -39,29 +38,19 @@ const QuickConsult = () => {
           <input className={styles['consult-input']} type="text" placeholder="차종" required />
           
           <div className={styles['privacy-checkbox']}>
-            <input type="checkbox" id="privacy-consent" defaultChecked required />
+            <input type="checkbox" id="privacy-consent" checked disabled />
             <label htmlFor="privacy-consent">
               [필수] 개인정보 수집·이용 동의 <span className={styles['view-link']}>[보기]</span>
             </label>
           </div>
           
           <button type="submit" className={styles['consult-submit-btn']}>비대면 상담 신청</button>
+          
+          <button className={styles['kakao-consult-btn']}>
+            <div className={styles['kakao-icon-large']}></div>
+            <span>카톡 간편 상담 신청</span>
+          </button>
         </form>
-        
-        <div className={styles['other-methods']}>
-          <p>다른 방법으로 문의</p>
-          <div className={styles['method-icons']}>
-            <div className={styles['method-icon']}>
-              <img src={kakoIcon} alt="카카오톡" />
-            </div>
-            <div className={styles['method-icon']}>
-              <img src={talkIcon} alt="카카오 채널" />
-            </div>
-            <div className={styles['method-icon']}>
-              <img src={naverIcon} alt="네이버 톡톡" />
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

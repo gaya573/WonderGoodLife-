@@ -1,0 +1,123 @@
+/* EventCard Styles - 실제 디자인에 맞춤 */
+.event-card-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.event-card {
+  width: 305px;
+  height: 202px;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  background: white;
+}
+
+.event-card:hover {
+  transform: translateY(-2px);
+}
+
+/* 종료된 상태 스타일 */
+.event-card.ended {
+  filter: grayscale(1) saturate(0.6);
+  opacity: 0.8;
+}
+
+.event-card.ended:hover {
+  transform: none;
+}
+
+
+/* 상단 헤더 영역 */
+.event-header {
+  padding: 16px 20px 8px;
+  z-index: 2;
+  position: relative;
+}
+
+.event-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 4px 0;
+  line-height: 1.2;
+}
+
+.event-subtitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  margin: 0;
+  opacity: 0.9;
+}
+
+/* 이미지 영역 */
+.event-image-area {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.event-car-image {
+  width: 100% ;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 1;
+  position: relative;
+}
+
+/* 웨이브 패턴 제거 */
+
+/* 카드 외부 설명 텍스트 */
+.event-description {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  text-align: center;
+  margin: 0;
+  line-height: 1.4;
+  max-width: 280px;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .event-card {
+    width: 280px;
+    height: 185px;
+  }
+  
+  .event-car-image {
+    width: 160px;
+    height: 100px;
+  }
+  
+  .event-title {
+    font-size: 16px;
+  }
+  
+  .event-subtitle {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .event-card {
+    width: 260px;
+    height: 170px;
+  }
+  
+  .event-car-image {
+    width: 140px;
+    height: 90px;
+  }
+}

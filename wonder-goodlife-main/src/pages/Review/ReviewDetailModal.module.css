@@ -18,25 +18,15 @@
   background-color: #ffffff;
   border-radius: 16px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-  width: 100%;
-  max-width: 600px;
-  max-height: 90vh;
-  overflow-y: auto;
+  width: 746px;
+  height: 950px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   animation: modalSlideIn 0.3s ease-out;
 }
 
-@keyframes modalSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
+
 
 /* 모달 헤더 */
 .modalHeader {
@@ -83,14 +73,16 @@
 .modalBody {
   padding: 24px;
   display: flex;
+  justify-content: center;
+  align-items: center;
   flex-direction: column;
   gap: 20px;
 }
 
 /* 이미지 영역 */
 .imageContainer {
-  width: 100%;
-  height: 250px;
+  width: 630px;
+  height: 450px;
   overflow: hidden;
   border-radius: 12px;
   margin-bottom: 8px;
@@ -256,6 +248,9 @@
 
 .reviewText {
   font-size: 1rem;
+  overflow: auto;
+  width: 100%;
+  max-height: 30%;
   color: #555;
   line-height: 1.6;
   margin: 0;

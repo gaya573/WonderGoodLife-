@@ -100,17 +100,22 @@ button:focus-visible {
 
 :root {
   /* Layout */
-  --max-width: 1160px;
+  --max-width: 1280px;
   --gutter: 20px;
-  --gutter-lg: 40px;
+  --gutter-lg: 40px;  
   --gutter-xl: 120px;
   --section-spacing: 64px;
   --section-spacing-sm: 40px;
   
   /* Colors - Primary */
-  --color-primary: #2E53E6;
-  --color-primary-dark: #1B3DE5;
-  --color-primary-light: #4B6AFF;
+  --color-primary: #0062FF;
+  --color-primary-dark: rgb(21, 56, 231);
+  --color-primary-light: #0084ff;
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(90deg, #0062FF 0%, #3D88FF 100%);
+  --gradient-primary-hover: linear-gradient(90deg, #0052DD 0%, #2D78FF 100%);
+  --gradient-primary-active: linear-gradient(90deg, #0042CC 0%, #1D68FF 100%);
   
   /* Colors - Neutral */
   --color-bg: #FAFAFA;
@@ -218,17 +223,18 @@ button:focus-visible {
 }
 
 .btn-primary {
-  background-color: var(--color-primary);
+  background: var(--gradient-primary);
   color: var(--color-white);
   border: 1px solid transparent;
 }
 
 .btn-primary:hover {
-  filter: brightness(1.05);
+  background: var(--gradient-primary-hover);
   transform: translateY(-1px);
 }
 
 .btn-primary:active {
+  background: var(--gradient-primary-active);
   transform: translateY(0);
 }
 
@@ -270,6 +276,19 @@ button:focus-visible {
 
 .section-sm {
   margin-top: var(--section-spacing-sm);
+}
+
+/* Gradient Utilities */
+.gradient-primary {
+  background: var(--gradient-primary);
+}
+
+.gradient-primary-hover:hover {
+  background: var(--gradient-primary-hover);
+}
+
+.gradient-primary-active:active {
+  background: var(--gradient-primary-active);
 }
 
 /* Responsive Breakpoints */

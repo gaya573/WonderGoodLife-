@@ -1,0 +1,119 @@
+/* Quick Consult Card Styles */
+
+.quick-consult-card {
+  background: var(--color-white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+  position: sticky;
+  top: 96px; /* 스크롤 시 상단에서 고정 */
+}
+
+.estimate-topbar {
+  background: linear-gradient(90deg, #0062FF 0%, #3D88FF 100%);
+  color: var(--color-white);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 700;
+}
+
+.estimate-topbar-title { 
+  font-size: var(--font-size-xl); 
+}
+
+.estimate-topbar-arrow { 
+  opacity: 0.9; 
+}
+
+.estimate-body { 
+  padding: var(--spacing-xl); 
+}
+
+.estimate-block { 
+  margin-bottom: var(--spacing-lg); 
+}
+
+.estimate-block-title { 
+  font-weight: var(--font-weight-bold); 
+  color: var(--color-text-secondary); 
+  margin-bottom: var(--spacing-sm); 
+}
+
+.estimate-row { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+}
+
+.estimate-sub { 
+  color: var(--color-text-tertiary); 
+  font-size: var(--font-size-md); 
+}
+
+.estimate-value { 
+  color: var(--color-text-primary); 
+  font-weight: var(--font-weight-bold); 
+}
+
+.estimate-divider { 
+  height: 1px; 
+  background: var(--color-border-light); 
+  margin: var(--spacing-md) 0; 
+}
+
+.estimate-options-scroll {
+  max-height: 160px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.option-row { 
+  display: flex; 
+  justify-content: space-between; 
+  padding: 6px 0; 
+  color: #333; 
+}
+
+.option-price { 
+  color: var(--color-primary-dark); 
+  font-weight: var(--font-weight-semibold); 
+}
+
+.estimate-total { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  margin: 10px 0 18px; 
+}
+
+.estimate-total-title { 
+  font-weight: var(--font-weight-bold); 
+  font-size: var(--font-size-xl); 
+}
+
+.estimate-total-value { 
+  font-weight: 800; 
+  font-size: var(--font-size-2xl); 
+  color: var(--color-primary-dark); 
+}
+
+.estimate-cta {
+  width: 100%;
+  padding: var(--spacing-lg);
+  background: linear-gradient(90deg, #0062FF 0%, #3D88FF 100%);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(31, 60, 181, 0.35);
+  transition: all 0.3s ease;
+}
+
+.estimate-cta:hover { 
+  background: linear-gradient(90deg, #0052DD 0%, #2D78FF 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(31, 60, 181, 0.45);
+}

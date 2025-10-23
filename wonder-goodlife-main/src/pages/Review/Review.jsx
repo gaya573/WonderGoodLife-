@@ -79,13 +79,13 @@ const Review = () => {
               ))}
             </div>
 
-            {/* 후기 작성하기 버튼 */}
+            {/*  차량 문의 하기  버튼 */}
             <div className={styles.writeReviewSection}>
               <button 
                 className={styles.writeReviewButton} 
                 onClick={handleWriteReviewClick}
               >
-                후기 작성하기
+               차량 문의 하기 
               </button>
             </div>
           </div>

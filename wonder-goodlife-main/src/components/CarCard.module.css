@@ -2,9 +2,9 @@
 .car-card-wrapper {
   display: flex;
   align-items: center;
-  gap: 19px;
+  gap: 20px;
   padding: 14px 0;
-  border-bottom: 1px solid #f0f0f0;
+  width: 1280px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -20,13 +20,15 @@
   height: 118px;
   border-radius: 8px;
   overflow: hidden;
-  background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+  background: #F7F7FB;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .car-card-image img {
-  width: 100%;
-  height: 100%;
+  padding-top: 14px;
+  padding-bottom: 15px;
+  width: 190px;
+  height: 116px;
   object-fit: cover;
   transition: transform 0.4s ease;
 }
@@ -36,79 +38,92 @@
 .car-card-content {
   display: flex;
   align-items: center;
-  gap: 20px;
+  width: 1080px;
   flex: 1;
-  background: #F3F4F8;
+  background: #F7F7FB;
   height: 118px;
-  padding: 0 24px;
-  border-radius: 8px;
+  border-radius: 20px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 /* 순위 */
 .car-card-rank {
-  font-size: 68px;
+  font-size: 50px;
+  width: 60px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-weight: 800;
-  color: #1a1a1a;
-  line-height: 1;
-  min-width: 50px;
   text-align: center;
-  flex-shrink: 0;
-  letter-spacing: -0.02em;
+  margin-left: 40px;
+}
+
+/* 1-3등 파란색 */
+.car-card-rank.top-three {
+  color: #0062FF;
+}
+
+/* 4등 이하 회색 */
+.car-card-rank.normal-rank {
+  color: #999;
 }
 
 /* 차량 정보 */
 .car-card-info {
-  flex: 0 0 300px;
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  flex-shrink: 0;
-  align-items: flex-start;
-  justify-content: center;
-  align-self: center;
+  align-items: center;
+  font-size: 20px;
+  color: #111;
+  text-align: left;
+  margin-left: 10px;
+  width: 416px;
+  height: 45px;
+  white-space: nowrap;
+  gap: 8px;
 }
   
 .car-card-name {
+  font-size: 32px;
+  font-weight: 600;
+  color: #131313;
+  line-height: 1;
+  letter-spacing: -0.01em;
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 20px;
-  font-weight: 600;
-  color: #111;
-  line-height: 1.4;
-  letter-spacing: -0.01em;
 }
 
 .car-card-brand {
-  font-size: 11px;
-  color: #999;
-  line-height: 1.4;
+  font-size: 20px;
+  color: #111;
+  padding-left: 10px;
+  line-height: 1;
   font-weight: 400;
-  letter-spacing: 0.01em;
+  display: flex;
+  align-items: center;
 }
 
 .car-card-meta {
-  font-size: 11px;
-  color: #999;
-  line-height: 1.4;
+  padding-left: 10px;
+  font-size: 20px;
+  color: #444;
   font-weight: 400;
-  letter-spacing: 0.01em;
+  display: flex;
+  align-items: center;
 }
 
 /* 설명 */
 .car-card-description {
   flex: 1;
-  font-size: 14px;
-  color: #444;
-  font-weight: 700;
-  line-height: 1.7;
+  font-size: 20px;
+  color: #000;
+  font-weight: 300;
   white-space: pre-line;
   padding-right: 20px;
   letter-spacing: -0.01em;
   align-self: center;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: flex-end;
+  text-align: right;
 }
-
-

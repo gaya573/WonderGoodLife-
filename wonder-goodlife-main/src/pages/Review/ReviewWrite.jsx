@@ -214,24 +214,25 @@ const ReviewWrite = () => {
         <div className={styles.writeLayout}>
           {/* 작성 폼 섹션 */}
           <div className={styles.writeSection}>
+            <h2 className={styles.formTitle}>작성하기</h2>
             <form onSubmit={handleSubmit} className={styles.reviewForm}>
               {/* 작성자 */}
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>작성자 *</label>
+                <label className={styles.formLabel}>작성자</label>
                 <input
                   type="text"
                   name="author"
                   value={formData.author}
                   onChange={handleInputChange}
                   className={styles.formInput}
-                  placeholder="예시] 임미희"
+                  placeholder="예시) 임미희"
                   required
                 />
               </div>
 
               {/* 지역 (시·도 / 구·군) */}
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>지역 *</label>
+                <label className={styles.formLabel}>지역</label>
                 <div className={styles.selectRow}>
                   <select
                     name="sido"
@@ -240,7 +241,7 @@ const ReviewWrite = () => {
                     className={styles.formSelect}
                     required
                   >
-                    <option value="" disabled>시 · 도</option>
+                    <option value="" disabled>시·도</option>
                     {SIDO_LIST.map((s) => (
                       <option key={s} value={s}>{s}</option>
                     ))}
@@ -253,7 +254,7 @@ const ReviewWrite = () => {
                     required
                     disabled={!formData.sido}
                   >
-                    <option value="" disabled>구 · 군</option>
+                    <option value="" disabled>구·군</option>
                     {(GUGUN_MAP[formData.sido] || []).map((g) => (
                       <option key={g} value={g}>{g}</option>
                     ))}
@@ -263,45 +264,27 @@ const ReviewWrite = () => {
 
               {/* 차종 */}
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>차종 *</label>
-                <div className={styles.selectRow}>
-                  <select
-                    name="carBrand"
-                    value={formData.carBrand}
-                    onChange={handleCarBrandChange}
-                    className={styles.formSelect}
-                    required
-                  >
-                    <option value="" disabled>브랜드</option>
-                    {CAR_BRANDS.map((brand) => (
-                      <option key={brand} value={brand}>{brand}</option>
-                    ))}
-                  </select>
-                  <select
-                    name="carModel"
-                    value={formData.carModel}
-                    onChange={handleCarModelChange}
-                    className={styles.formSelect}
-                    required
-                    disabled={!formData.carBrand}
-                  >
-                    <option value="" disabled>모델</option>
-                    {(CAR_MODELS[formData.carBrand] || []).map((model) => (
-                      <option key={model} value={model}>{model}</option>
-                    ))}
-                  </select>
-                </div>
+                <label className={styles.formLabel}>차종</label>
+                <input
+                  type="text"
+                  name="carModel"
+                  value={formData.carModel}
+                  onChange={handleInputChange}
+                  className={styles.formInput}
+                  placeholder="예시) 기아 카니발"
+                  required
+                />
               </div>
 
               {/* 별점 */}
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>별점 *</label>
+                <label className={styles.formLabel}>별점</label>
                 <div className={styles.ratingContainer}>
                   <div className={styles.stars}>
                     {renderStars()}
                   </div>
-                  <span className={styles.ratingText}>
-                    {formData.rating > 0 ? `${formData.rating}.0` : '별점을 선택해주세요'}
+                  <span className={styles.ratingNumber}>
+                    {formData.rating > 0 ? `${formData.rating}.0` : ''}
                   </span>
                 </div>
               </div>
@@ -324,8 +307,7 @@ const ReviewWrite = () => {
                     className={styles.uploadPlaceholder}
                     onClick={() => document.getElementById('review-image-input')?.click()}
                   >
-                    <span className={styles.uploadIcon}>📷</span>
-                    <span className={styles.uploadText}>사진 업로드</span>
+                    <span className={styles.uploadIcon}>↑</span>
                   </button>
 
                   {/* 미리보기 그리드 */}
@@ -351,7 +333,7 @@ const ReviewWrite = () => {
 
               {/* 내용 */}
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>내용 *</label>
+                <label className={styles.formLabel}>내용</label>
                 <textarea
                   name="content"
                   value={formData.content}
@@ -361,18 +343,6 @@ const ReviewWrite = () => {
                   rows={8}
                   required
                 />
-                
-                {/* 작성 가이드 */}
-                <div className={styles.writeGuide}>
-                  <h4>계약후기(리뷰) 작성 시 유의사항 - WONDERGOODLIFE 안내</h4>
-                  <ul>
-                    <li>차량 사진은 필수로 첨부 부탁드립니다.</li>
-                    <li>원더굿라이프의 후기 작성은 고객님의 개인정보 보호와 편의를 위해 회원가입 후 비인증 상태에서도 자유롭게 작성하실 수 있습니다.</li>
-                    <li>게시판 성격에 맞지 않는 광고성 게시물, 비방, 상업적 글 등은 운영정책에 따라 사전 통보 없이 검수 후 삭제 및 등록 제한이 될 수 있습니다.</li>
-                    <li>작성 시에도 내부 검수 및 이미지 확인 절차를 거쳐 등록되며, 허위 후기 방지를 위해 실제 계약 고객 우선 검증 후 게시됩니다.</li>
-                    <li>원더굿라이프는 고객님께서 남겨주신 모든 리뷰와 의견을 소중히 다루며, 서비스 품질 향상 및 신뢰도 개선에 적극 반영하고 있습니다.</li>
-                  </ul>
-                </div>
               </div>
 
               {/* 폼 액션 버튼 */}
@@ -387,11 +357,67 @@ const ReviewWrite = () => {
             </form>
           </div>
 
-          {/* 빠른 상담 사이드바 */}
-          <div className={styles.sidebar}>
-            <QuickConsult />
+          {/* 가이드라인 섹션 */}
+          <div className={styles.guideSection}>
+            <div className={styles.writeGuide}>
+              <h4>계약후기(리뷰) 작성 시 유의사항 - WONDERGOODLIFE 안내</h4>
+              <ul>
+                <li>차량 사진은 필수로 첨부 부탁드립니다.</li>
+                <li>원더굿라이프의 후기 작성은 고객님의 개인정보 보호와 편의를 위해 회원가입 후 비인증 상태에서도 자유롭게 작성 하실 수 있습니다.</li>
+                <li>게시판 성격에 맞지 않는 광고성 게시물, 비방, 상업적 글 등은 운영정책에 따라 사전 통보 없이 검수 후 삭제 및 등록 제한이 될 수 있습니다.</li>
+                <li>작성 시에도 내부 검수 및 이미지 확인 절차를 거쳐 등록되며, 허위 후기 방지를 위해 실제 계약 고객 우선 검증 후 게시됩니다.</li>
+                <li>원더굿라이프는 고객님께서 남겨주신 모든 리뷰와 의견을 소중히 다루며, 서비스 품질 향상 및 신뢰도 개선에 적극 반영하고 있습니다.</li>
+                <li>후기 작성은 100자 이상 1,000자 이하로 작성해 주세요.</li>
+                <li>구체적인 계약 경험이나 만족도를 함께 남겨주시면 다른 고객분들께 도움이 됩니다.</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* 우측 고정 사이드바 */}
+          <div className={styles.rightSidebar}>
+            <div className={styles.bulletinBoard}>
+              <div className={styles.boardHeader}>
+                <h3>게시판</h3>
+                <a href="#" className={styles.moreLink}>더보기</a>
+              </div>
+              <div className={styles.boardList}>
+                <ul>
+                  <li>
+                    <a href="#" className={styles.boardItem}>
+                      <span className={styles.boardTitle}>신규 차량 출시 안내</span>
+                      <span className={styles.boardDate}>2024.01.15</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className={styles.boardItem}>
+                      <span className={styles.boardTitle}>겨울철 차량 관리 팁</span>
+                      <span className={styles.boardDate}>2024.01.14</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className={styles.boardItem}>
+                      <span className={styles.boardTitle}>이벤트 진행 안내</span>
+                      <span className={styles.boardDate}>2024.01.13</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className={styles.boardItem}>
+                      <span className={styles.boardTitle}>고객 서비스 개선</span>
+                      <span className={styles.boardDate}>2024.01.12</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className={styles.boardItem}>
+                      <span className={styles.boardTitle}>리뷰 작성 가이드</span>
+                      <span className={styles.boardDate}>2024.01.11</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
+
       </div>
 
       {/* 푸터 */}

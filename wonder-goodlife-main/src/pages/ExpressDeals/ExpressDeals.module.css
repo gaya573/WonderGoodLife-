@@ -1,0 +1,193 @@
+/* Express Deals Page Styles */
+.express-page {
+  min-height: 100vh;
+  background: #fff;
+}
+
+.express-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Banner Section */
+.express-banner {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 60px 0;
+  margin-bottom: 40px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.express-banner-inner {
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.express-banner-text h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 10px 0;
+}
+
+.express-banner-text p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  margin: 0;
+}
+
+.express-banner-cta {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  padding: 15px 30px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.express-banner-cta:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Top Highlights Section */
+.express-top-highlights {
+  max-width: 1680px;
+  margin: 0 auto;
+  margin-bottom: 40px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+.section-link {
+  background: none;
+  border: none;
+  color: #000;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.top-grid-scroll {
+  overflow-x: 2px;
+  padding-bottom: 10px;
+}
+
+.top-grid {
+  display: flex;
+  gap: 20px;
+  min-width: max-content;
+}
+
+/* List Sticky Header */
+.express-list-sticky {
+  padding: 20px 0;
+  margin-bottom: 60px;
+
+}
+
+.express-list-header {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.express-list-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+/* Layout */
+.express-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Main Content */
+.express-main {
+  border-radius: 12px;
+}
+
+/* Toolbar */
+.express-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 600px;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-2xl);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.express-sort {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+
+.carlist-sort-select {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  padding-right: var(--spacing-2xl);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  outline: none;
+  transition: all var(--transition-fast);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 12px;
+}
+
+.carlist-sort-select:hover {
+  border-color: var(--color-primary);
+}
+
+.carlist-sort-select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(46, 83, 230, 0.1);
+}
+
+
+.express-search {
+  flex: 1;
+  max-width: 300px;
+}
+
+/* Grid */
+.carlist-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}

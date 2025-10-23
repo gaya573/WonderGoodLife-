@@ -3,8 +3,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import Breadcrumb from '../../components/Breadcrumb';
 import SearchBar from '../../components/SearchBar';
 import CarFilterPanel from '../../components/filters/CarFilterPanel';
-import CarGrid from '../../components/grids/CarGrid';
-import './PrepurchaseDeals.css';
+import PromotionCard from '../../components/PromotionCard';
+import styles from './PrepurchaseDeals.module.css';
 import { dealsTop as dataTop, deals as dataAll } from '../ExpressDeals/data';
 
 const PrepurchaseDeals = () => {
@@ -70,48 +70,51 @@ const PrepurchaseDeals = () => {
   const handleCardClick = () => navigate('/prepurchase-deals/detail/0');
 
   return (
-    <div className="express-page">
-      <div className="express-container">
+    <div className={styles['express-page']}>
+      <div className={styles['express-container']}>
         <Breadcrumb items={breadcrumbItems} />
 
-        <div className="express-banner">
-          <div className="express-banner-inner">
-            <div className="express-banner-text">
+        <div className={styles['express-banner']}>
+          <div className={styles['express-banner-inner']}>
+            <div className={styles['express-banner-text']}>
               <h2>선구매 핫딜 특가</h2>
               <p>조기 계약으로 더 좋은 혜택, 선구매 핫딜 모음</p>
             </div>
-            <button className="express-banner-cta" onClick={()=>window.scrollTo({top:999999, behavior:'smooth'})}>상담 받기</button>
+            <button className={styles['express-banner-cta']} onClick={()=>window.scrollTo({top:999999, behavior:'smooth'})}>상담 받기</button>
           </div>
         </div>
 
 
-        <section className="express-top-highlights">
-          <div className="section-header">
-            <h3 className="section-title">🚨 [특가 마감 임박] 지금 계약 시 특별 할인</h3>
-            <button className="section-link" onClick={()=>navigate('/express-deals/all')}>전체보기</button>
+        <section className={styles['express-top-highlights']}>
+          <div className={styles['section-header']}>
+            <h3 className={styles['section-title']}>🚨 [특가 마감 임박] 지금 계약 시 특별 할인</h3>
+            <button className={styles['section-link']} onClick={()=>navigate('/prepurchase-deals/all')}>전체보기</button>
           </div>
-          <div className="top-grid-scroll">
-            <div className="carlist-grid top-grid">
-            {dealsTop.map((d, idx) => (
-              <div key={d.id ?? idx} className="carlist-card" onClick={handleCardClick} style={{ cursor: 'pointer' }}>
-                <img src={d.image} alt={d.name} className="carlist-card-img" />
-                <div className="carlist-card-content">
-                  <h3 className="carlist-card-name">{d.name}</h3>
-                  <p className="carlist-card-price">월 {d.price}만원~</p>
-                </div>
-                <button className="carlist-card-btn" onClick={(e) => { e.stopPropagation(); handleCardClick(); }}>내 견적 알아보기</button>
-              </div>
-            ))}
+          <div className={styles['top-grid-scroll']}>
+            <div className={styles['top-grid']}>
+              {dealsTop.map((d, idx) => (
+                <PromotionCard
+                  key={d.id ?? idx}
+                  id={d.id ?? idx}
+                  name={d.name}
+                  desc={d.brand ? `${d.brand}\n선구매 특가` : '선구매 특가'}
+                  img={d.image}
+                  brand={d.brand}
+                  variant="small"
+                  onClick={handleCardClick}
+                  buttonText="내 견적 알아보기"
+                />
+              ))}
             </div>
           </div>
         </section>
-        <div className="express-list-sticky">
-              <div className="express-list-header">
-                <h2 className="express-list-title">선구매 핫딜 리스트</h2>
+        <div className={styles['express-list-sticky']}>
+              <div className={styles['express-list-header']}>
+                <h2 className={styles['express-list-title']}>선구매 핫딜 리스트</h2>
              
               </div>
             </div>
-        <div className="express-layout">
+        <div className={styles['express-layout']}>
           <CarFilterPanel
             manufacturers={manufacturers}
             carTypes={carTypes}
@@ -129,22 +132,41 @@ const PrepurchaseDeals = () => {
             onSelectFuel={handleSelectFuel}
           />
 
-          <main className="express-main">
-            <div className="express-toolbar">
-              <div className="express-sort">
-                <select value={sortBy} onChange={(e)=>setSortBy(e.target.value)} className="carlist-sort-select">
+          <main className={styles['express-main']}>
+            <div className={styles['express-toolbar']}>
+              <div className={styles['express-sort']}>
+                <select value={sortBy} onChange={(e)=>setSortBy(e.target.value)} className={styles['carlist-sort-select']}>
                   <option value="recent">최신순</option>
                   <option value="priceLow">가격낮은순</option>
                   <option value="priceHigh">가격높은순</option>
                 </select>
               </div>
-              <div className="express-search">
-                <SearchBar value={searchQuery} onChange={(e)=>setSearchQuery(e.target.value)} placeholder="모델/제조사 검색" />
+              <div className={styles['express-search']}>
+              
+              <SearchBar 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="차량 모델, 제조사를 검색해보세요"
+                  variant="long"
+                />
               </div>
             </div>
 
             <div>
-              <CarGrid cars={filtered.map((d)=>({ id:d.id, name:d.name, img:d.image, priceText:`월 ${d.price}만원~` }))} onClickCard={handleCardClick} columns={4} />
+              <div className={styles['carlist-grid']}>
+                {filtered.map((d, idx) => (
+                  <PromotionCard
+                    key={d.id ?? idx}
+                    id={d.id ?? idx}
+                    name={d.name}
+                    desc={d.brand ? `${d.brand}\n월 ${d.price}만원~` : `월 ${d.price}만원~`}
+                    img={d.image}
+                    brand={d.brand}
+                    onClick={handleCardClick}
+                    buttonText="내 견적 알아보기"
+                  />
+                ))}
+              </div>
             </div>
           </main>
         </div>

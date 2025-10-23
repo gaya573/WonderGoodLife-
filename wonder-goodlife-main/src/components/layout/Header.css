@@ -98,21 +98,27 @@
 .search-bar {
   display: flex;
   align-items: center;
-  gap: 8px;
+  width: full;
+  height: full;
   background: #f8f9fa;
   padding: 0.3rem 0.6rem;
   border-radius: 20px;
-  border: 1px solid #ddd;
 }
 
 .search-bar input {
   border: none;
   outline: none;
+  width: full;
+  height: full;
   background-color: #F7F7FB;
   color: #000;
-  /* background: transparent; */
   font-size: 0.9rem;
+}
 
+.search-bar input:focus {
+  outline: none;
+  box-shadow: none;
+  border: none;
 }
 
 
@@ -149,7 +155,7 @@
 
 .nav-links {
   display: grid;
-  grid-template-columns: 100px 100px 100px 100px 100px 140px; /* 비교·계산과 상담·문의 위치 변경 */
+  grid-template-columns: 100px 100px 100px 100px 100px 100px; /* 비교·계산과 상담·문의 위치 변경 */
   column-gap: 24px;
   width: 100%;
   justify-items: start; /* 텍스트 왼쪽 정렬 */
@@ -199,23 +205,27 @@
   transition: transform .12s ease;
 }
 .hamburger-menu .hamburger-icon {
-  width: 18px;
-  height: 2px;
-  background: #111;
+  width: 20px;
+  height: 20px;
   position: relative;
   display: inline-block;
 }
-.hamburger-menu .hamburger-icon::before,
-.hamburger-menu .hamburger-icon::after {
-  content: '';
+
+.hamburger-menu .hamburger-icon::before {
+  content: '☰';
   position: absolute;
-  left: 0;
-  width: 18px;
-  height: 2px;
-  background: #111;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  color: #111;
+  transition: transform 0.2s ease;
 }
-.hamburger-menu .hamburger-icon::before { top: -6px; }
-.hamburger-menu .hamburger-icon::after { top: 6px; }
+
+.hamburger-menu.active .hamburger-icon::before {
+  content: '✕';
+  transform: translate(-50%, -50%) rotate(90deg);
+}
 .hamburger-menu.active { border-color: #2E53E6; color: #2E53E6; transform: scale(1.06); }
 
 /* 키보드 포커스 표시 */
@@ -237,7 +247,7 @@
   opacity: 0;
   visibility: hidden; /* 비즈블 0 요구사항 */
   transform: translateY(-8px);
-  transition: all .2s ease;
+  transition: all .15s ease;
   pointer-events: none; /* 닫힘 시 이벤트 차단 */
   z-index: 1025;
 }
@@ -252,7 +262,7 @@
   margin: 0 auto;
   padding: 12px 34px 16px; /* 좌측 2px 보정 */
   display: grid;
-  grid-template-columns: 40px 100px 100px 100px 100px 100px 140px; /* 햄버거 스페이서 + 비교·계산과 상담·문의 위치 변경 */
+  grid-template-columns: 40px 100px 100px 100px 100px 100px 100px; /* 햄버거 스페이서 + 비교·계산과 상담·문의 위치 변경 */
   column-gap: 24px;
 }
 .mega-col.mega-spacer { pointer-events: none; }

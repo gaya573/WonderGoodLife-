@@ -1,25 +1,5 @@
- /* 공통 딜 디테일 레이아웃 (12컬럼 가이드) */
-.deal-detail-page { background:#fff; }
-.deal-detail-container { max-width: 1160px; margin: 0 auto; padding: 0 20px; }
-.deal-grid { display:grid; grid-template-columns: 8fr 4fr; gap: 24px; align-items:start; }
-
-/* 좌측 메인(차 이미지 + 카드들) */
-.deal-main { display:flex; flex-direction:column; gap: 24px; }
-.deal-hero { background:#fff; border:1px solid #E6E7EA; border-radius:12px; padding:16px; box-shadow:0 4px 10px rgba(0,0,0,.06); }
-
-/* 우측 사이드 고정 카드 영역 */
-.deal-aside { position:sticky; top:96px; }
-
-/* 섹션 박스들 */
-.deal-card { background:#fff; border:1px solid #E6E7EA; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,.05); }
-.deal-card-header { padding:12px 16px; border-bottom:1px solid #E6E7EA; display:flex; align-items:center; justify-content:space-between; }
-.deal-card-body { padding:16px; }
-
-/* 하단 긴급 차량 리스트 */
-.deal-bottom-list { margin-top: 32px; }
-.deal-bottom-grid { display:grid; grid-template-columns: repeat(4, 1fr); gap:16px; }
-.deal-mini-card { border:1px solid #E6E7EA; border-radius:10px; padding:12px; text-align:center; box-shadow:0 2px 6px rgba(0,0,0,.05); }
-
+/* Car Detail Page Styles */
+ 
 .car-detail-page {
   width: 100%;
   min-height: 100vh;
@@ -492,6 +472,8 @@
 .estimate-total-title { font-weight: var(--font-weight-bold); font-size: var(--font-size-xl); }
 .estimate-total-value { font-weight: 800; font-size: var(--font-size-2xl); color: var(--color-primary-dark); }
 
+
+
 .estimate-cta {
   width: 100%;
   padding: var(--spacing-lg);
@@ -702,24 +684,4 @@
   font-size: var(--font-size-base);
   color: rgba(255, 255, 255, 0.8);
   margin: 0;
-}
-
-/* 비교형 섹션 - 선구매 */
-.compare-section { display:grid; grid-template-columns: 1fr 80px 1fr; gap: var(--spacing-2xl); max-width: var(--max-width); margin: var(--section-spacing) auto; padding: 0 var(--gutter); }
-.compare-card { background: #fff; border:1px solid var(--color-border-light); border-radius: 12px; box-shadow: var(--shadow-md); padding: var(--spacing-xl); }
-.compare-header { display:flex; align-items:center; gap: 10px; margin-bottom: var(--spacing-lg); }
-.compare-header.alt { opacity: .9; }
-.badge-primary { background: #ff6b35; color:#fff; border-radius:999px; padding: 4px 10px; font-weight: var(--font-weight-bold); font-size: 12px; }
-.badge-muted { background: #f1f3f5; color:#333; border-radius:999px; padding: 4px 10px; font-weight: var(--font-weight-bold); font-size: 12px; }
-.compare-body { display:grid; gap: 10px; }
-.compare-row { display:flex; justify-content: space-between; align-items:center; border-bottom:1px dashed var(--color-border-light); padding: 8px 0; font-size: 14px; }
-.compare-row span { color: var(--color-text-tertiary); }
-.compare-row strong { color: var(--color-text-primary); font-weight: var(--font-weight-semibold); }
-.compare-cta { width: 100%; height: var(--btn-height-lg); margin-top: var(--spacing-lg); background: var(--color-primary); border:none; color:#fff; border-radius: var(--radius-sm); font-weight: var(--font-weight-bold); cursor:pointer; }
-.compare-cta.secondary { background:#495057; }
-.compare-vs { display:flex; align-items:center; justify-content:center; font-weight: 800; color:#adb5bd; font-size: 22px; }
-
-@media (max-width: 1024px) {
-  .compare-section { grid-template-columns: 1fr; }
-  .compare-vs { order: -1; font-size: 16px; }
 }

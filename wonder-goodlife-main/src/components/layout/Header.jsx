@@ -8,13 +8,23 @@ const Header = () => {
   const [isMegaOpen, setIsMegaOpen] = useState(false);
   const megaRef = useRef(null);
   const toggleBtnRef = useRef(null);
+  const headerRef = useRef(null);
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
     // 검색 로직 구현 (필요시)
   };
 
-  // 바깥 클릭 시 닫힘
+  // 호버 이벤트 핸들러
+  const handleMouseEnter = () => {
+    setIsMegaOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsMegaOpen(false);
+  };
+
+  // 바깥 클릭 시 닫힘 (클릭으로 열었을 때만)
   useEffect(() => {
     const onDocClick = (e) => {
       if (!isMegaOpen) return;
@@ -36,7 +46,12 @@ const Header = () => {
   }, [isMegaOpen]);
 
   return (
-    <header className="header">
+    <header 
+      className="header"
+      ref={headerRef}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       {/* 상단 링크 */}
       <div className="top-bar">
         <div className="top-links">
@@ -60,6 +75,7 @@ const Header = () => {
             onChange={handleSearch}
             placeholder="검색어를 입력해 주세요"
             className="header-search"
+            variant="small"
           />
           
           <div className="right-links">
@@ -81,6 +97,7 @@ const Header = () => {
           aria-pressed={isMegaOpen}
           ref={toggleBtnRef}
           onClick={() => setIsMegaOpen((v) => !v)}
+          onMouseEnter={handleMouseEnter}
         >
           <span className="hamburger-icon"/>
         </button>
@@ -96,8 +113,8 @@ const Header = () => {
           </NavLink>
           <NavLink to="/promotion" className={({ isActive }) => isActive ? 'active' : ''}>브랜드별 혜택</NavLink>
           <NavLink to="/review" className={({ isActive }) => isActive ? 'active' : ''}>후기·리뷰</NavLink>
-          <NavLink to="/" className={({ isActive }) => isActive ? 'active' : ''}>상담·문의</NavLink>
-          <NavLink to="/" className={({ isActive }) => isActive ? 'active' : ''}>비교·계산</NavLink>
+          {/* <NavLink to="/" className={({ isActive }) => isActive ? 'active' : ''}>상담·문의</NavLink>
+          <NavLink to="/" className={({ isActive }) => isActive ? 'active' : ''}>비교·계산</NavLink> */}
         </nav>
       </div>
 
@@ -109,6 +126,8 @@ const Header = () => {
         role="menu"
         aria-hidden={!isMegaOpen}
         style={{ zIndex: 1025 }}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
         <div className="mega-inner">
           <div className="mega-col mega-spacer" />
@@ -136,20 +155,20 @@ const Header = () => {
             </ul>
           </div>
           <div className="mega-col">
-            <ul>
+            {/* <ul>
               <li><span className="disabled-link">빠른견적요청</span></li>
               <li><span className="disabled-link">카톡상담·전화</span></li>
               <li><span className="disabled-link">방문예약</span></li>
               <li><span className="disabled-link">간편심사 해보기</span></li>
-            </ul>
+            </ul> */}
           </div>
           <div className="mega-col">
-            <ul>
+            {/* <ul>
               <li><span className="disabled-link">월납입비교</span></li>
               <li><span className="disabled-link">장기렌트 vs 리스 vs 할부</span></li>
               <li><span className="disabled-link">세금/부가세/정비처리</span></li>
               <li><span className="disabled-link">보험료추정</span></li>
-            </ul>
+            </ul> */}
           </div>
   
          

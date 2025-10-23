@@ -1,26 +1,28 @@
 import React from 'react';
-import './SearchBar.css';
+import styles from './SearchBar.module.css';
 
 /**
  * 공통 검색창 컴포넌트
  * Header와 CarList에서 동일하게 사용
+ * variant: "long" (639px × 56px) | "small" (기본 크기)
  */
 const SearchBar = ({ 
   value, 
   onChange, 
   placeholder = "검색어를 입력해 주세요",
-  className = ""
+  className = "",
+  variant = "small" // "long" | "small"
 }) => {
   return (
-    <div className={`search-bar ${className}`}>
+    <div className={`${styles['search-bar']} ${styles[variant]} ${className}`}>
       <input 
         type="text" 
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        className="search-bar-input"
+        className={styles['search-bar-input']}
       />
-      <button className="search-bar-btn" aria-label="검색">
+      <button className={styles['search-bar-btn']} aria-label="검색">
         <svg
           width="18"
           height="18"

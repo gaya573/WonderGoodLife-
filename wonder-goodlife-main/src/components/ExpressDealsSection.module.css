@@ -1,0 +1,65 @@
+/* 즉시출고차량 섹션 */
+.express-deals-section {
+  padding-top: 50px ;
+  background: #ffffff;
+  margin: 0 auto;
+  max-width: 1280px;
+}
+
+.express-deals-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 40px;
+}
+
+.express-deals-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.express-deals-icon {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.express-deals-title {
+  font-size: 40px;
+  font-weight: 700;
+  color: #000;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.express-deals-link {
+  font-size: 20px;
+  color: #111;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.express-deals-link:hover {
+  color: #0052DD;
+}
+
+.express-deals-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+
+.express-deals-footer {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.express-deals-disclaimer {
+    text-align: right;
+    font-size: 20px;
+    color: #444;
+    font-weight: 300;
+}

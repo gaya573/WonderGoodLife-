@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import Breadcrumb from '../../components/Breadcrumb';
+import PromotionCard from '../../components/PromotionCard';
 import styles from './PromotionBrands.module.css';
 import { brandCards as cardDataByBrand, allBrandCards } from './data';
 
@@ -77,21 +78,18 @@ export default function PromotionBrands() {
 
         <div className={styles['promo-grid']}>
           {displayed.map((c) => (
-            <article key={`${c.brand}-${c.id}`} className={styles['promo-card']} onClick={()=>navigate(`/promotion/brands/detail/${c.id}`)}>
-              <div className={styles['promo-card-top']}>
-                <img src={c.img} alt={c.name} loading="lazy" />
-              </div>
-              <div className={styles['promo-card-body']}>
-                <h3>{c.name}</h3>
-                <p>{c.desc}</p>
-              </div>
-              <button
-                className={styles['promo-card-btn']}
-                onClick={() => navigate(`/promotion/brands/detail/${c.id}`)}
-              >
-                혜택 상담 받기
-              </button>
-            </article>
+            <PromotionCard
+              key={`${c.brand}-${c.id}`}
+              id={c.id}
+              name={c.name}
+              desc={c.desc}
+              img={c.img}
+              brand={c.brand}
+              variant="small"
+              onClick={(id) => navigate(`/promotion/brands/detail/${id}`)}
+              buttonText="혜택 상담 받기"
+              ended={isEnded}
+            />
           ))}
         </div>
       </div>

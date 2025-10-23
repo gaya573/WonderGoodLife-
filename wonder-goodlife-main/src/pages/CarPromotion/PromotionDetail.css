@@ -475,7 +475,7 @@
 .estimate-cta {
   width: 100%;
   padding: var(--spacing-lg);
-  background: var(--color-primary);
+  background: var(--gradient-primary);
   color: var(--color-white);
   border: none;
   border-radius: var(--radius-sm);
@@ -483,7 +483,7 @@
   cursor: pointer;
   box-shadow: 0 6px 18px rgba(31, 60, 181, 0.35);
 }
-.estimate-cta:hover { background: var(--color-primary-dark); }
+.estimate-cta:hover { background: var(--gradient-primary-hover); }
 
 .consult-form {
   display: flex;

@@ -11,6 +11,7 @@ import PrepurchaseDealDetail from './pages/PrepurchaseDeals/PrepurchaseDealDetai
 import ExpressDeals from './pages/ExpressDeals/ExpressDeals';
 import ExpressDealsAll from './pages/ExpressDeals/ExpressDealsAll';
 import PrepurchaseDeals from './pages/PrepurchaseDeals/PrepurchaseDeals';
+import PrepurchaseDealsAll from './pages/PrepurchaseDeals/PrepurchaseDealsAll';
 import Promotion from './pages/CarPromotion/Promotion';
 import CardPromotion from './pages/CardPromoiton/CardPromotion';
 import CardPromotionBrands from './pages/CardPromoiton/CardPromotionBrands';
@@ -36,6 +37,7 @@ function App() {
         <Route path="/express-deals/all" element={<ExpressDealsAll />} />
         <Route path="/prepurchase-deals" element={<PrepurchaseDeals />} />
         <Route path="/prepurchase-deals/detail/:carId" element={<PrepurchaseDealDetail />} />
+        <Route path="/prepurchase-deals/all" element={<PrepurchaseDealsAll />} />
         <Route path="/promotion" element={<Promotion />} />
         <Route path="/card-promotion" element={<CardPromotion />} />
         <Route path="/card-promotion/brands" element={<CardPromotionBrands />} />

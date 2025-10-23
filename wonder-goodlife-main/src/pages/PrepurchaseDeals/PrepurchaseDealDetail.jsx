@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Breadcrumb from '../../components/Breadcrumb';
 import EstimateModal from '../../components/modals/EstimateModal';
-import './PrepurchaseDealDetail.css';
+import QuickConsultCard from '../../components/QuickConsultCard';
+import styles from './PrepurchaseDealDetail.module.css';
 
 const PrepurchaseDealDetail = () => {
   const { carId } = useParams();
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
   
-  const [selectedColor, setSelectedColor] = useState(Number(searchParams.get('color') || 0));
-  const [selectedTrimIndex, setSelectedTrimIndex] = useState(Number(searchParams.get('trim') || 0));
+  const [selectedColor, setSelectedColor] = useState(0);
+  const [selectedTrimIndex, setSelectedTrimIndex] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState({
     sunroof: false,
     adas: false,
@@ -20,12 +20,12 @@ const PrepurchaseDealDetail = () => {
   
   // 계약 조건
   const [contractMethod, setContractMethod] = useState('장기렌탈');
-  const [contractPeriod, setContractPeriod] = useState(searchParams.get('term') || '24개월');
-  const [deposit, setDeposit] = useState(searchParams.get('deposit') || '없음');
-  const [prepayment, setPrepayment] = useState(searchParams.get('prepay') || '없음');
-  const [mileage, setMileage] = useState(searchParams.get('mileage') || '10,000km');
-  const [carTax, setCarTax] = useState(searchParams.get('tax') || '포함');
-  const [insuranceAge, setInsuranceAge] = useState(searchParams.get('insure') || '만 21세(이상)');
+  const [contractPeriod, setContractPeriod] = useState('24개월');
+  const [deposit, setDeposit] = useState('없음');
+  const [prepayment, setPrepayment] = useState('없음');
+  const [mileage, setMileage] = useState('10,000km');
+  const [carTax, setCarTax] = useState('포함');
+  const [insuranceAge, setInsuranceAge] = useState('만 21세(이상)');
   const [isEstimateOpen, setIsEstimateOpen] = useState(false);
   
   // 디테일 페이지 진입/차량 변경 시 스크롤을 맨 위로 고정
@@ -36,20 +36,6 @@ const PrepurchaseDealDetail = () => {
       setTimeout(() => window.scrollTo(0, 0), 0);
     }
   }, [carId]);
-
-  // URL 쿼리 동기화
-  useEffect(() => {
-    const params = new URLSearchParams(searchParams);
-    params.set('trim', String(selectedTrimIndex));
-    params.set('color', String(selectedColor));
-    params.set('term', String(contractPeriod));
-    params.set('deposit', String(deposit));
-    params.set('prepay', String(prepayment));
-    params.set('mileage', String(mileage));
-    params.set('tax', String(carTax));
-    params.set('insure', String(insuranceAge));
-    setSearchParams(params, { replace: true });
-  }, [selectedTrimIndex, selectedColor, contractPeriod, deposit, prepayment, mileage, carTax, insuranceAge]);
 
   // 세부모델(트림) 변경 시 옵션 선택 상태 초기화
   useEffect(() => {
@@ -135,7 +121,7 @@ const PrepurchaseDealDetail = () => {
   
   // 그룹 펼침 상태
   const [expandedTrimGroups, setExpandedTrimGroups] = useState(
-    carData.trimGroups.map(() => false)
+    carData.trimGroups.map(() => true) // 처음에 모든 그룹이 열려있도록 변경
   );
   const toggleTrimGroup = (idx) => {
     setExpandedTrimGroups(prev => prev.map((v, i) => (i === idx ? !v : v)));
@@ -165,87 +151,39 @@ const PrepurchaseDealDetail = () => {
     }));
   };
 
-  const estimateMonthly = () => {
-    const base = calculateTotal();
-    const depRate = deposit === '없음' ? 0 : Number(deposit.replace('%',''))/100;
-    const preRate = prepayment === '없음' ? 0 : Number(prepayment.replace('%',''))/100;
-    const termNum = Number(contractPeriod.replace('개월','')) || 24;
-    const financed = base * (1 - depRate - preRate);
-    return Math.max(1, Math.round((financed / termNum) / 10000));
-  };
-
-  const renderPaymentDetails = () => (
-    <div className="estimate-body">
-      <div className="estimate-block">
-        <div className="estimate-block-title">기본 차량가격</div>
-        <div className="estimate-row">
-          <span className="estimate-sub">{currentTrim.name}</span>
-          <span className="estimate-value">{Math.round(currentTrim.price / 10000).toLocaleString()}만원</span>
-        </div>
-      </div>
-
-      <div className="estimate-divider"></div>
-
-      <div className="estimate-block">
-        <div className="estimate-block-title">옵션가격</div>
-        <div className="estimate-options-scroll">
-          <div className="option-row">
-            <span>차량 외장색상 · {carData.colors[selectedColor].name}</span>
-            <span className="option-price">+ 0원</span>
-          </div>
-          {carData.options.map(opt => (
-            selectedOptions[opt.id] ? (
-              <div className="option-row" key={opt.id}>
-                <span>{opt.name}</span>
-                <span className="option-price">+ {Math.round(opt.price / 10000)}만원</span>
-              </div>
-            ) : null
-          ))}
-        </div>
-      </div>
-
-      <div className="estimate-divider"></div>
-
-      <div className="estimate-total">
-        <span className="estimate-total-title">합계</span>
-        <span className="estimate-total-value">{Math.round(calculateTotal() / 10000).toLocaleString()}만원</span>
-      </div>
-    </div>
-  );
-
   return (
-    <div className="deal-detail-page">
-      <div className="deal-detail-container">
+    <div className={styles['car-detail-page']}>
+      <div className={styles['car-detail-container']}>
         <Breadcrumb items={breadcrumbItems} />
         
-        <div className="deal-grid">
-          {/* 왼쪽: 메인 (8컬럼) */}
-          <div className="deal-main">
+        <div className={styles['car-detail-layout']}>
+          {/* 왼쪽: 차량 이미지 + 옵션들 */}
+          <div className={styles['car-detail-left']}>
             {/* 차량 이미지 + 오버레이 정보 */}
-            <div className="deal-hero car-hero-section">
+            <div className={styles['car-hero-section']}>
               <img 
                 src="https://images.unsplash.com/photo-1542362567-b07e54358753?w=1200&h=700&fit=crop" 
                 alt={carData.name}
-                className="car-hero-image"
+                className={styles['car-hero-image']}
               />
               
               {/* 우측 상단 정보 오버레이 */}
-              <div className="car-info-badge">
+              <div className={styles['car-info-badge']}>
                 <div>
-                <div className="brand-logo-square"> </div>
-                <h1 className="car-hero-title">{carData.name}</h1>
+                <div className={styles['brand-logo-square']}> </div>
+                <h1 className={styles['car-hero-title']}>{carData.name}</h1>
                 </div>
-                <div className="color-info-section">
-                  <div className="color-header">
+                <div className={styles['color-info-section']}>
+                  <div className={styles['color-header']}>
                     
-                    <span className="color-label-text">외장색상 선택</span>
-                    <span className="selected-color-text">{carData.colors[selectedColor].name}</span>
+                    <span className={styles['color-label-text']}>외장색상 선택</span>
+                    <span className={styles['selected-color-text']}>{carData.colors[selectedColor].name}</span>
                   </div>
-                  <div className="color-palette">
+                  <div className={styles['color-palette']}>
                     {carData.colors.map((color, idx) => (
                       <button
                         key={idx}
-                        className={`color-swatch ${selectedColor === idx ? 'selected' : ''}`}
+                        className={`${styles['color-swatch']} ${selectedColor === idx ? styles['selected'] : ''}`}
                         style={{ backgroundColor: color.code }}
                         onClick={() => setSelectedColor(idx)}
                         title={color.name}
@@ -256,49 +194,74 @@ const PrepurchaseDealDetail = () => {
               </div>  
             </div>
 
-            {/* 비교 섹션: 선구매 */}
-            <section className="compare-section">
-              <div className="estimate-card compare-left">
-                <div className="estimate-topbar">
-                  <span className="estimate-topbar-title">선구매 핫딜</span>
-                </div>
-                {renderPaymentDetails()}
-                <button className="estimate-cta" onClick={() => setIsEstimateOpen(true)}>비대면 상담 신청</button>
+            {/* 세부모델 선택 */}
+            <div className={styles['option-card']}>
+              <div className={styles['option-card-header']} >
+                <h3 className={styles['option-card-title']}>세부모델 선택</h3>
+                    
               </div>
-              <div className="compare-vs">VS</div>
-              <div className="estimate-card compare-right">
-                <div className="estimate-topbar" style={{background:'#f1f3f5', color:'#333'}}>
-                  <span className="estimate-topbar-title">일반 렌트 견적</span>
+              {expandedSections.trim && (
+                <div className={styles['option-card-content']}>
+                  <div className={styles['trim-selector']}>
+                    {carData.trimGroups.map((group, gidx) => (
+                      <div key={gidx} className={styles['trim-group']}>
+                        <div className={styles['trim-group-header']} onClick={() => toggleTrimGroup(gidx)}>
+                          <span className={styles['trim-group-title']}>{group.title}</span>
+                          <button className={styles['group-toggle']}>{expandedTrimGroups[gidx] ? '−' : '+'}</button>
+                        </div>
+                        {expandedTrimGroups[gidx] && (
+                          <div className={styles['trim-list']}>
+                            {group.items.map((item, idx) => {
+                              const baseIndex = carData.trimGroups
+                                .slice(0, gidx)
+                                .reduce((sum, g) => sum + g.items.length, 0);
+                              const globalIndex = baseIndex + idx;
+                              const active = selectedTrimIndex === globalIndex;
+                              return (
+                                <div
+                                  key={globalIndex}
+                                  className={`${styles['trim-option']} ${active ? styles['active'] : ''}`}
+                                  tabIndex={0}
+                                  onClick={() => setSelectedTrimIndex(globalIndex)}
+                                >
+                                  <div className={styles['trim-radio']}>{active && <span className={styles['trim-check']}>✓</span>}</div>
+                                  <div className={styles['trim-name']}>{item.name}</div>
+                                  <div className={styles['trim-price']}>{item.price.toLocaleString()}원</div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                {renderPaymentDetails()}
-                <button className="estimate-cta" onClick={() => setIsEstimateOpen(true)}>상담으로 혜택 비교</button>
-              </div>
-            </section>
+              )}
+            </div>
 
-            {/* 옵션/계약조건 - 두 칼럼 */}
-            <div className="config-row">
-            <div className="deal-card option-card">
-              <div className="option-card-header" onClick={() => toggleSection('options')}>
-                <h3 className="option-card-title">옵션 선택</h3>
-                <button className="toggle-btn">
+            {/* 옵션 선택 */}
+            <div className={styles['option-card']}>
+              <div className={styles['option-card-header']} onClick={() => toggleSection('options')}>
+                <h3 className={styles['option-card-title']}>옵션 선택</h3>
+                <button className={styles['toggle-btn']}>
                   {expandedSections.options ? '−' : '+'}
                 </button>
               </div>
               {expandedSections.options && (
-                <div className="option-card-content">
-                  <div className="additional-options">
+                <div className={styles['option-card-content']}>
+                  <div className={styles['additional-options']}>
                     {carData.options.map((option) => (
                       <div
                         key={option.id}
-                        className={`additional-option ${selectedOptions[option.id] ? 'active' : ''}`}
+                        className={`${styles['additional-option']} ${selectedOptions[option.id] ? styles['active'] : ''}`}
                         onClick={() => handleOptionToggle(option.id)}
                       >
-                        <div className="option-checkbox">
+                        <div className={styles['option-checkbox']}>
                           {selectedOptions[option.id] && <span>✓</span>}
                         </div>
-                        <div className="option-details">
-                          <span className="option-name">{option.name}</span>
-                          <span className="option-price">+{option.price.toLocaleString()}원</span>
+                        <div className={styles['option-details']}>
+                          <span className={styles['option-name']}>{option.name}</span>
+                          <span className={styles['option-price']}>+{option.price.toLocaleString()}원</span>
                         </div>
                       </div>
                     ))}
@@ -308,28 +271,28 @@ const PrepurchaseDealDetail = () => {
             </div>
 
             {/* 계약 조건 선택 */}
-            <div className="deal-card option-card contract-conditions">
-              <div className="option-card-header" onClick={() => toggleSection('contract')}>
-                <h3 className="option-card-title">계약 조건 선택</h3>
-                <button className="toggle-btn">
+            <div className={`${styles['option-card']} ${styles['contract-conditions']}`}>
+              <div className={styles['option-card-header']} onClick={() => toggleSection('contract')}>
+                <h3 className={styles['option-card-title']}>계약 조건 선택</h3>
+                <button className={styles['toggle-btn']}>
                   {expandedSections.contract ? '−' : '+'}
                 </button>
               </div>
               
               {expandedSections.contract && (
-                <div className="option-card-content">
+                <div className={styles['option-card-content']}>
                   {/* 이용방법 */}
-                  <div className="contract-row">
-                <label className="contract-label">이용방법</label>
-                <div className="contract-options">
+                  <div className={styles['contract-row']}>
+                <label className={styles['contract-label']}>이용방법</label>
+                <div className={styles['contract-options']}>
                   <button 
-                    className={`contract-btn ${contractMethod === '장기렌탈' ? 'active' : ''}`}
+                    className={`${styles['contract-btn']} ${contractMethod === '장기렌탈' ? styles['active'] : ''}`}
                     onClick={() => setContractMethod('장기렌탈')}
                   >
                     장기렌탈
                   </button>
                   <button 
-                    className={`contract-btn ${contractMethod === '리스' ? 'active' : ''}`}
+                    className={`${styles['contract-btn']} ${contractMethod === '리스' ? styles['active'] : ''}`}
                     onClick={() => setContractMethod('리스')}
                   >
                     리스
@@ -338,13 +301,13 @@ const PrepurchaseDealDetail = () => {
               </div>
 
               {/* 이용기간 */}
-              <div className="contract-row">
-                <label className="contract-label">이용기간</label>
-                <div className="contract-options-grid">
+              <div className={styles['contract-row']}>
+                <label className={styles['contract-label']}>이용기간</label>
+                <div className={styles['contract-options-grid']}>
                   {['24개월', '36개월', '48개월', '72개월'].map((period) => (
                     <button
                       key={period}
-                      className={`contract-btn ${contractPeriod === period ? 'active' : ''}`}
+                      className={`${styles['contract-btn']} ${contractPeriod === period ? styles['active'] : ''}`}
                       onClick={() => setContractPeriod(period)}
                     >
                       {period}
@@ -354,13 +317,13 @@ const PrepurchaseDealDetail = () => {
               </div>
 
               {/* 보증금 */}
-              <div className="contract-row">
-                <label className="contract-label">보증금</label>
-                <div className="contract-options-grid">
+              <div className={styles['contract-row']}>
+                <label className={styles['contract-label']}>보증금</label>
+                <div className={styles['contract-options-grid']}>
                   {['없음', '10%', '20%', '30%', '40%'].map((dep) => (
                     <button
                       key={dep}
-                      className={`contract-btn ${deposit === dep ? 'active' : ''}`}
+                      className={`${styles['contract-btn']} ${deposit === dep ? styles['active'] : ''}`}
                       onClick={() => setDeposit(dep)}
                     >
                       {dep}
@@ -370,13 +333,13 @@ const PrepurchaseDealDetail = () => {
               </div>
 
               {/* 선납금 */}
-              <div className="contract-row">
-                <label className="contract-label">선납금</label>
-                <div className="contract-options-grid">
+              <div className={styles['contract-row']}>
+                <label className={styles['contract-label']}>선납금</label>
+                <div className={styles['contract-options-grid']}>
                   {['없음', '10%', '20%', '30%', '40%'].map((pre) => (
                     <button
                       key={pre}
-                      className={`contract-btn ${prepayment === pre ? 'active' : ''}`}
+                      className={`${styles['contract-btn']} ${prepayment === pre ? styles['active'] : ''}`}
                       onClick={() => setPrepayment(pre)}
                     >
                       {pre}
@@ -386,13 +349,13 @@ const PrepurchaseDealDetail = () => {
               </div>
 
               {/* 연간 약정운행거리 */}
-              <div className="contract-row">
-                <label className="contract-label">연간 약정운행거리</label>
-                <div className="contract-options-grid">
+              <div className={styles['contract-row']}>
+                <label className={styles['contract-label']}>연간 약정운행거리</label>
+                <div className={styles['contract-options-grid']}>
                   {['10,000km', '20,000km', '30,000km', '40,000km', '50,000km'].map((mile) => (
                     <button
                       key={mile}
-                      className={`contract-btn ${mileage === mile ? 'active' : ''}`}
+                      className={`${styles['contract-btn']} ${mileage === mile ? styles['active'] : ''}`}
                       onClick={() => setMileage(mile)}
                     >
                       {mile}
@@ -402,17 +365,17 @@ const PrepurchaseDealDetail = () => {
               </div>
 
               {/* 자동차세 */}
-              <div className="contract-row">
-                <label className="contract-label">자동차세</label>
-                <div className="contract-options">
+              <div className={styles['contract-row']}>
+                <label className={styles['contract-label']}>자동차세</label>
+                <div className={styles['contract-options']}>
                   <button 
-                    className={`contract-btn ${carTax === '포함' ? 'active' : ''}`}
+                    className={`${styles['contract-btn']} ${carTax === '포함' ? styles['active'] : ''}`}
                     onClick={() => setCarTax('포함')}
                   >
                     포함
                   </button>
                   <button 
-                    className={`contract-btn ${carTax === '미포함' ? 'active' : ''}`}
+                    className={`${styles['contract-btn']} ${carTax === '미포함' ? styles['active'] : ''}`}
                     onClick={() => setCarTax('미포함')}
                   >
                     미포함
@@ -421,17 +384,17 @@ const PrepurchaseDealDetail = () => {
               </div>
 
               {/* 보험 면제 */}
-              <div className="contract-row">
-                <label className="contract-label">보험 면제</label>
-                <div className="contract-options">
+              <div className={styles['contract-row']}>
+                <label className={styles['contract-label']}>보험 면제</label>
+                <div className={styles['contract-options']}>
                   <button 
-                    className={`contract-btn ${insuranceAge === '만 21세(이상)' ? 'active' : ''}`}
+                    className={`${styles['contract-btn']} ${insuranceAge === '만 21세(이상)' ? styles['active'] : ''}`}
                     onClick={() => setInsuranceAge('만 21세(이상)')}
                   >
                     만 21세(이상)
                   </button>
                   <button 
-                    className={`contract-btn ${insuranceAge === '만 26세(이상)' ? 'active' : ''}`}
+                    className={`${styles['contract-btn']} ${insuranceAge === '만 26세(이상)' ? styles['active'] : ''}`}
                     onClick={() => setInsuranceAge('만 26세(이상)')}
                   >
                     만 26세(이상)
@@ -440,15 +403,24 @@ const PrepurchaseDealDetail = () => {
               </div>
                 </div>
               )}
-            </div>{/* /.config-row */}
             </div>
           </div>
 
-          {/* 우측 간편상담 패널 제거: 비교형 레이아웃으로 통합 */}
+          {/* 오른쪽: 간편상담 스타일의 견적 카드 */}
+          <div className={styles['car-detail-right']}>
+            <QuickConsultCard
+              carName={carData.name}
+              trimName={currentTrim.name}
+              trimPrice={currentTrim.price}
+              selectedColor={carData.colors[selectedColor].name}
+              selectedOptions={carData.options.filter(opt => selectedOptions[opt.id])}
+              discountAmount={calculateDiscount()}
+              showDiscount={true}
+              onEstimateClick={() => setIsEstimateOpen(true)}
+            />
+          </div>
         </div>
       </div>
-
-      {/* 기존 하단 비교형 섹션 제거 (상단으로 이동) */}
       <EstimateModal
         open={isEstimateOpen}
         onClose={() => setIsEstimateOpen(false)}
@@ -460,4 +432,3 @@ const PrepurchaseDealDetail = () => {
 };
 
 export default PrepurchaseDealDetail;
-

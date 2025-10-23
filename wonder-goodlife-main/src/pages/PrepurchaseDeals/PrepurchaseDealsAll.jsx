@@ -4,19 +4,17 @@ import Breadcrumb from '../../components/Breadcrumb';
 import SearchBar from '../../components/SearchBar';
 import PromotionCard from '../../components/PromotionCard';
 import CarFilterPanel from '../../components/filters/CarFilterPanel';
-import styles from './ExpressDealsAll.module.css';
-import { deals as dataAll } from './data';
+import styles from './PrepurchaseDealsAll.module.css';
+import { deals as dataAll } from '../ExpressDeals/data';
 
-const ExpressDealsAll = () => {
+const PrepurchaseDealsAll = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('recent');
-  const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(300);
 
   const breadcrumbItems = [
     { label: '홈', link: '/' },
-    { label: '즉시출고 특가', link: '/express-deals' },
+    { label: '선구매 핫딜 특가', link: '/prepurchase-deals' },
     { label: '전체보기' },
   ];
 
@@ -42,14 +40,14 @@ const ExpressDealsAll = () => {
     return list;
   }, [searchQuery, sortBy]);
 
-  const handleCardClick = (id) => navigate(`/express-deals/detail/${id ?? 0}`);
+  const handleCardClick = (id) => navigate(`/prepurchase-deals/detail/${id ?? 0}`);
 
   return (
     <div className={styles['express-page']}>
       <div className={styles['express-container']}>
         <Breadcrumb items={breadcrumbItems} />
         <div className={styles['section-header']}>
-                <h3 className={styles['section-title']}>🔔 [긴급] 오늘 놓치면 마감 차량</h3>
+                <h3 className={styles['section-title']}>🚨 [특가 마감 임박] 지금 계약 시 특별 할인</h3>
               </div>
         <div >
           
@@ -68,8 +66,7 @@ const ExpressDealsAll = () => {
                 </select>
               </div>
               <div className={styles['express-search']}>
-                <SearchBar value={searchQuery} onChange={(e)=>setSearchQuery(e.target.value)} 
-                placeholder="모델/제조사 검색" variant="long" />
+                <SearchBar value={searchQuery} onChange={(e)=>setSearchQuery(e.target.value)} placeholder="모델/제조사 검색" variant="long" />
               </div>
             </div>
 
@@ -82,7 +79,6 @@ const ExpressDealsAll = () => {
                   desc={d.brand ? `${d.brand}\n월 ${d.price}만원~` : `월 ${d.price}만원~`}
                   img={d.image}
                   brand={d.brand}
-                  variant="small"
                   onClick={handleCardClick}
                   buttonText="내 견적 알아보기"
                 />
@@ -95,6 +91,4 @@ const ExpressDealsAll = () => {
   );
 };
 
-export default ExpressDealsAll;
-
-
+export default PrepurchaseDealsAll;
