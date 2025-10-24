@@ -802,3 +802,171 @@ class StagingBrandPrePurchase:
             return False
         now = datetime.utcnow()
         return now >= self.pre_purchase_start and self.is_valid_now()
+
+
+# ===== Main (Production) 할인 정책 엔티티 =====
+
+@dataclass
+class DiscountPolicy:
+    """할인 정책 허브 엔티티 - 브랜드, Vehicle Line, 트림 단위"""
+    brand_id: int
+    vehicle_line_id: int
+    trim_id: int
+    policy_type: PolicyType
+    title: str
+    description: Optional[str] = None
+    valid_from: Optional[datetime] = None
+    valid_to: Optional[datetime] = None
+    is_active: bool = True
+    id: Optional[int] = None
+    
+    def validate(self) -> None:
+        """정책 데이터 검증"""
+        if not self.brand_id:
+            raise ValueError("브랜드 ID는 필수입니다")
+        if not self.vehicle_line_id:
+            raise ValueError("Vehicle Line ID는 필수입니다")
+        if not self.trim_id:
+            raise ValueError("트림 ID는 필수입니다")
+        if not self.title or len(self.title.strip()) == 0:
+            raise ValueError("정책 제목은 필수입니다")
+        if self.valid_from and self.valid_to and self.valid_from >= self.valid_to:
+            raise ValueError("유효 종료일은 시작일보다 늦어야 합니다")
+    
+    def is_valid_now(self) -> bool:
+        """현재 유효한 정책인지 확인"""
+        if not self.is_active:
+            return False
+        now = datetime.utcnow()
+        if self.valid_from and now < self.valid_from:
+            return False
+        if self.valid_to and now > self.valid_to:
+            return False
+        return True
+
+
+@dataclass
+class BrandCardBenefit:
+    """카드사 제휴 할인 엔티티"""
+    discount_policy_id: int
+    card_partner: str
+    cashback_rate: float
+    title: str
+    description: Optional[str] = None
+    valid_from: Optional[datetime] = None
+    valid_to: Optional[datetime] = None
+    is_active: bool = True
+    id: Optional[int] = None
+    
+    def validate(self) -> None:
+        """카드 제휴 데이터 검증"""
+        if not self.card_partner or len(self.card_partner.strip()) == 0:
+            raise ValueError("카드사명은 필수입니다")
+        if self.cashback_rate < 0 or self.cashback_rate > 100:
+            raise ValueError("캐시백 비율은 0-100 사이여야 합니다")
+        if not self.title or len(self.title.strip()) == 0:
+            raise ValueError("제목은 필수입니다")
+
+
+@dataclass
+class BrandPromo:
+    """브랜드 프로모션 할인 엔티티"""
+    discount_policy_id: int
+    title: str
+    discount_rate: Optional[float] = None
+    discount_amount: Optional[int] = None
+    description: Optional[str] = None
+    valid_from: Optional[datetime] = None
+    valid_to: Optional[datetime] = None
+    is_active: bool = True
+    id: Optional[int] = None
+    
+    def validate(self) -> None:
+        """프로모션 데이터 검증"""
+        if self.discount_rate is None and self.discount_amount is None:
+            raise ValueError("할인율 또는 할인 금액 중 하나는 필수입니다")
+        if self.discount_rate is not None and (self.discount_rate < 0 or self.discount_rate > 100):
+            raise ValueError("할인율은 0-100 사이여야 합니다")
+        if self.discount_amount is not None and self.discount_amount < 0:
+            raise ValueError("할인 금액은 0 이상이어야 합니다")
+        if not self.title or len(self.title.strip()) == 0:
+            raise ValueError("제목은 필수입니다")
+    
+    def calculate_discount(self, base_price: int) -> int:
+        """할인 금액 계산"""
+        if self.discount_amount:
+            return self.discount_amount
+        if self.discount_rate:
+            return int(base_price * self.discount_rate / 100)
+        return 0
+
+
+@dataclass
+class BrandInventoryDiscount:
+    """재고 보유 할인 엔티티"""
+    discount_policy_id: int
+    inventory_level_threshold: int
+    discount_rate: float
+    title: str
+    description: Optional[str] = None
+    valid_from: Optional[datetime] = None
+    valid_to: Optional[datetime] = None
+    is_active: bool = True
+    id: Optional[int] = None
+    
+    def validate(self) -> None:
+        """재고 할인 데이터 검증"""
+        if self.inventory_level_threshold < 0:
+            raise ValueError("재고 기준 수량은 0 이상이어야 합니다")
+        if self.discount_rate < 0 or self.discount_rate > 100:
+            raise ValueError("할인율은 0-100 사이여야 합니다")
+        if not self.title or len(self.title.strip()) == 0:
+            raise ValueError("제목은 필수입니다")
+    
+    def is_eligible(self, current_inventory: int) -> bool:
+        """재고 기준 충족 여부"""
+        return current_inventory >= self.inventory_level_threshold
+
+
+@dataclass
+class BrandPrePurchase:
+    """선구매/특가 할인 엔티티"""
+    discount_policy_id: int
+    event_type: EventTypeForPrePurchase
+    title: str
+    discount_rate: Optional[float] = None
+    discount_amount: Optional[int] = None
+    description: Optional[str] = None
+    pre_purchase_start: Optional[datetime] = None
+    valid_from: Optional[datetime] = None
+    valid_to: Optional[datetime] = None
+    is_active: bool = True
+    id: Optional[int] = None
+    
+    def validate(self) -> None:
+        """선구매 할인 데이터 검증"""
+        if self.discount_rate is None and self.discount_amount is None:
+            raise ValueError("할인율 또는 할인 금액 중 하나는 필수입니다")
+        if self.discount_rate is not None and (self.discount_rate < 0 or self.discount_rate > 100):
+            raise ValueError("할인율은 0-100 사이여야 합니다")
+        if self.discount_amount is not None and self.discount_amount < 0:
+            raise ValueError("할인 금액은 0 이상이어야 합니다")
+        if not self.title or len(self.title.strip()) == 0:
+            raise ValueError("제목은 필수입니다")
+    
+    def calculate_discount(self, base_price: int) -> int:
+        """할인 금액 계산"""
+        if self.discount_amount:
+            return self.discount_amount
+        if self.discount_rate:
+            return int(base_price * self.discount_rate / 100)
+        return 0
+    
+    def is_pre_purchase_active(self) -> bool:
+        """선구매 기간인지 확인"""
+        if self.event_type != EventTypeForPrePurchase.PRE_PURCHASE:
+            return False
+        if not self.pre_purchase_start:
+            return False
+        now = datetime.utcnow()
+        return now >= self.pre_purchase_start and self.is_valid_now()

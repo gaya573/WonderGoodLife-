@@ -15,6 +15,8 @@ import MainDBStatus from './pages/MainDBStatus';
 import DiscountPolicyManagement from './pages/DiscountPolicyManagement';
 import AddDiscountPolicy from './pages/AddDiscountPolicy';
 import SelectVersionForDiscount from './pages/SelectVersionForDiscount';
+import AllDiscountEvents from './pages/AllDiscountEvents';
+import MainDBDiscountPolicies from './pages/MainDBDiscountPolicies';
 
 function App() {
   return (
@@ -41,6 +43,8 @@ function App() {
           <Route path="add-discount" element={<SelectVersionForDiscount />} />
           <Route path="discount-policies/:versionId" element={<DiscountPolicyManagement />} />
           <Route path="discount-policies/:versionId/add/:policyType" element={<AddDiscountPolicy />} />
+          <Route path="all-discount-events/:versionId" element={<AllDiscountEvents />} />
+          <Route path="main-db-discounts" element={<MainDBDiscountPolicies />} />
           <Route path="user-management" element={<UserManagement />} />
           <Route path="user-profile" element={<UserProfile />} />
           <Route path="permission-management" element={<PermissionManagement />} />

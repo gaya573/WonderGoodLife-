@@ -872,3 +872,134 @@ def delete_option(
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"옵션 삭제 실패: {str(e)}")
+
+
+@router.get("/discount-policies")
+def get_main_discount_policies(
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    """메인 DB 할인 정책 전체 조회"""
+    try:
+        from app.infrastructure.orm_models import (
+            DiscountPolicyORM, BrandORM, VehicleLineORM, TrimORM,
+            BrandCardBenefitORM, BrandPromoORM, BrandInventoryDiscountORM, BrandPrePurchaseORM
+        )
+        
+        # 모든 할인 정책 조회
+        policies = db.query(DiscountPolicyORM).all()
+        
+        policies_data = []
+        
+        for policy in policies:
+            # 브랜드, Vehicle Line, 트림 정보 조회
+            brand = db.query(BrandORM).filter(BrandORM.id == policy.brand_id).first()
+            vehicle_line = db.query(VehicleLineORM).filter(VehicleLineORM.id == policy.vehicle_line_id).first()
+            trim = db.query(TrimORM).filter(TrimORM.id == policy.trim_id).first()
+            
+            # 할인 유형별 상세 정보 조회
+            policy_details = {}
+            
+            policy_type_str = policy.policy_type.value if hasattr(policy.policy_type, 'value') else str(policy.policy_type)
+            
+            if policy_type_str == 'CARD_BENEFIT':
+                card_benefits = db.query(BrandCardBenefitORM).filter(
+                    BrandCardBenefitORM.policy_id == policy.id
+                ).all()
+                policy_details = {
+                    "card_benefits": [
+                        {
+                            "id": cb.id,
+                            "card_name": cb.card_name,
+                            "discount_type": cb.discount_type,
+                            "discount_value": cb.discount_value,
+                            "min_amount": cb.min_amount,
+                            "max_discount": cb.max_discount
+                        }
+                        for cb in card_benefits
+                    ]
+                }
+            elif policy_type_str == 'BRAND_PROMO':
+                promos = db.query(BrandPromoORM).filter(
+                    BrandPromoORM.policy_id == policy.id
+                ).all()
+                policy_details = {
+                    "promos": [
+                        {
+                            "id": p.id,
+                            "promo_name": p.promo_name,
+                            "discount_type": p.discount_type,
+                            "discount_value": p.discount_value,
+                            "promo_code": p.promo_code
+                        }
+                        for p in promos
+                    ]
+                }
+            elif policy_type_str == 'INVENTORY':
+                inventory_discounts = db.query(BrandInventoryDiscountORM).filter(
+                    BrandInventoryDiscountORM.policy_id == policy.id
+                ).all()
+                policy_details = {
+                    "inventory_discounts": [
+                        {
+                            "id": inv.id,
+                            "discount_type": inv.discount_type,
+                            "discount_value": inv.discount_value,
+                            "min_stock": inv.min_stock
+                        }
+                        for inv in inventory_discounts
+                    ]
+                }
+            elif policy_type_str == 'PRE_PURCHASE':
+                pre_purchases = db.query(BrandPrePurchaseORM).filter(
+                    BrandPrePurchaseORM.policy_id == policy.id
+                ).all()
+                policy_details = {
+                    "pre_purchases": [
+                        {
+                            "id": pp.id,
+                            "pre_purchase_type": pp.pre_purchase_type,
+                            "discount_value": pp.discount_value,
+                            "min_down_payment": pp.min_down_payment
+                        }
+                        for pp in pre_purchases
+                    ]
+                }
+            
+            policies_data.append({
+                "id": policy.id,
+                "brand_id": policy.brand_id,
+                "brand_name": brand.name if brand else None,
+                "vehicle_line_id": policy.vehicle_line_id,
+                "vehicle_line_name": vehicle_line.name if vehicle_line else None,
+                "trim_id": policy.trim_id,
+                "trim_name": trim.name if trim else None,
+                "policy_type": policy_type_str,
+                "title": policy.title,
+                "description": policy.description,
+                "valid_from": policy.valid_from.isoformat() if policy.valid_from else None,
+                "valid_to": policy.valid_to.isoformat() if policy.valid_to else None,
+                "is_active": policy.is_active,
+                "created_at": policy.created_at.isoformat() if policy.created_at else None,
+                "updated_at": policy.updated_at.isoformat() if policy.updated_at else None,
+                **policy_details
+            })
+        
+        # 통계 정보
+        stats = {
+            "total": len(policies_data),
+            "card_benefit": len([p for p in policies_data if p["policy_type"] == "CARD_BENEFIT"]),
+            "brand_promo": len([p for p in policies_data if p["policy_type"] == "BRAND_PROMO"]),
+            "inventory": len([p for p in policies_data if p["policy_type"] == "INVENTORY"]),
+            "pre_purchase": len([p for p in policies_data if p["policy_type"] == "PRE_PURCHASE"]),
+            "active": len([p for p in policies_data if p["is_active"]])
+        }
+        
+        return {
+            "stats": stats,
+            "policies": policies_data,
+            "last_updated": datetime.now().isoformat()
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"메인 DB 할인 정책 조회 실패: {str(e)}")

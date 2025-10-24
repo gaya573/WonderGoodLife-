@@ -412,27 +412,50 @@ function VersionList() {
               현재 메인 데이터베이스의 상태를 확인하세요
             </p>
           </div>
-          <button 
-            onClick={handleMainDBView}
-            style={{
-              background: '#3b82f6',
-              color: 'white',
-              border: 'none',
-              padding: '0.75rem 1.5rem',
-              borderRadius: '8px',
-              fontSize: '0.875rem',
-              fontWeight: '500',
-              cursor: 'pointer',
-              transition: 'background-color 0.2s ease',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem'
-            }}
-            onMouseOver={(e) => e.target.style.background = '#2563eb'}
-            onMouseOut={(e) => e.target.style.background = '#3b82f6'}
-          >
-            🔍 메인 DB 보기
-          </button>
+          <div style={{ display: 'flex', gap: '0.75rem' }}>
+            <button 
+              onClick={handleMainDBView}
+              style={{
+                background: '#3b82f6',
+                color: 'white',
+                border: 'none',
+                padding: '0.75rem 1.5rem',
+                borderRadius: '8px',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                cursor: 'pointer',
+                transition: 'background-color 0.2s ease',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}
+              onMouseOver={(e) => e.target.style.background = '#2563eb'}
+              onMouseOut={(e) => e.target.style.background = '#3b82f6'}
+            >
+              🔍 메인 DB 보기
+            </button>
+            <button 
+              onClick={() => navigate('/main-db-discounts')}
+              style={{
+                background: '#ec4899',
+                color: 'white',
+                border: 'none',
+                padding: '0.75rem 1.5rem',
+                borderRadius: '8px',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                cursor: 'pointer',
+                transition: 'background-color 0.2s ease',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}
+              onMouseOver={(e) => e.target.style.background = '#db2777'}
+              onMouseOut={(e) => e.target.style.background = '#ec4899'}
+            >
+              🎉 메인 DB 전체 할인 목록 보기
+            </button>
+          </div>
         </div>
       </div>
 
@@ -761,6 +784,8 @@ function VersionList() {
                   >
                     크롤링
                   </button>
+                  
+              
                   
                   {/* 승인신청 버튼 */}
                   <button 

@@ -7,16 +7,16 @@ from .infrastructure.database import Base, engine
 from .presentation.api.car import brands
 from .presentation.api.car import models, trims
 from .presentation.api.betch import excel, jobs
-from .presentation.api.staging import staging, versions
-from .presentation.api.staging import simple_search
-from .presentation.api.staging.brands import router as staging_brands_router
-from .presentation.api.staging.vehicle_lines import router as staging_vehicle_lines_router
-from .presentation.api.staging.models import router as staging_models_router
-from .presentation.api.staging.trims import router as staging_trims_router
-from .presentation.api.staging.options import router as staging_options_router
+from .presentation.api.staging_car import staging, versions
+from .presentation.api.staging_car import simple_search
+from .presentation.api.staging_car.brands import router as staging_brands_router
+from .presentation.api.staging_car.vehicle_lines import router as staging_vehicle_lines_router
+from .presentation.api.staging_car.models import router as staging_models_router
+from .presentation.api.staging_car.trims import router as staging_trims_router
+from .presentation.api.staging_car.options import router as staging_options_router
 from .presentation.api.auth import auth, users, permissions
 from .presentation.api.main_db import router as main_db_router
-from .presentation.api.discount import router as discount_router
+from .presentation.api.staging_discount_car import router as discount_router
 from .config import settings
 
 # 데이터베이스 테이블 생성

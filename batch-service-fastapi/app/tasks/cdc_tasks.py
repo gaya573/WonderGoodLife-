@@ -77,22 +77,34 @@ def migrate_version_to_main(self, version_id: int):
             staging_trim_repo=staging_trim_repo
         )
         
-        # 마이그레이션 실행
+        # 1. 메인 서비스 마이그레이션 실행
         success = migration_service.migrate_approved_version(version_id)
         
-        if success:
-            # 버전 상태를 MIGRATED로 업데이트
-            version.approval_status = ApprovalStatus.MIGRATED
-            version_repo.update(version_id, version)
-            
-            logger.info(f"Migration completed for version {version_id}")
-            return {
-                "version_id": version_id,
+        if not success:
+            raise Exception("Main service migration failed")
+        
+        logger.info(f"Main service migration completed for version {version_id}")
+        
+        # 2. 할인 정책 마이그레이션 실행
+        discount_policy_result = _migrate_discount_policies(db, version_id)
+        
+        logger.info(f"Discount policy migration completed for version {version_id}")
+        
+        # 3. 버전 상태를 MIGRATED로 업데이트
+        version.approval_status = ApprovalStatus.MIGRATED
+        version_repo.update(version_id, version)
+        
+        logger.info(f"Migration completed for version {version_id}")
+        return {
+            "version_id": version_id,
+            "success": True,
+            "message": f"Version {version.version_name} migrated successfully",
+            "main_service": {
                 "success": True,
-                "message": f"Version {version.version_name} migrated successfully"
-            }
-        else:
-            raise Exception("Migration failed")
+                "message": "Main service migrated successfully"
+            },
+            "discount_policy": discount_policy_result
+        }
         
     except Exception as e:
         logger.error(f"Migration failed for version {version_id}: {str(e)}")
@@ -392,3 +404,231 @@ def sync_pending_approvals():
         
     finally:
         db.close()
+
+
+@shared_task(bind=True, name="migrate_discount_policies_to_main")
+def migrate_discount_policies_to_main(self, version_id: int):
+    """
+    승인된 버전의 모든 Staging 할인 정책을 Main 테이블로 전송
+    전략: 기존 데이터를 모두 삭제하고 다시 삽입
+    
+    Args:
+        version_id: 승인된 버전 ID
+    """
+    db: Session = SessionLocal()
+    
+    try:
+        result = _migrate_discount_policies(db, version_id)
+        return result
+    except Exception as e:
+        logger.error(f"Discount policy migration failed for version {version_id}: {str(e)}")
+        db.rollback()
+        raise self.retry(exc=e, countdown=60, max_retries=3)
+    finally:
+        db.close()
+
+
+def _migrate_discount_policies(db: Session, version_id: int):
+    """
+    할인 정책 마이그레이션 헬퍼 함수
+    
+    Args:
+        db: 데이터베이스 세션
+        version_id: 버전 ID
+    
+    Returns:
+        dict: 마이그레이션 결과
+    """
+    from ..infrastructure.orm_models import (
+        StagingDiscountPolicyORM, StagingBrandCardBenefitORM, StagingBrandPromoORM,
+        StagingBrandInventoryDiscountORM, StagingBrandPrePurchaseORM,
+        DiscountPolicyORM, BrandCardBenefitORM, BrandPromoORM,
+        BrandInventoryDiscountORM, BrandPrePurchaseORM,
+        StagingBrandORM, StagingVehicleLineORM, StagingTrimORM,
+        BrandORM, VehicleLineORM, TrimORM
+    )
+    
+    logger.info(f"Starting discount policy migration for version {version_id}")
+    
+    # 1. 기존 Main 할인 정책 모두 삭제
+    logger.info("Deleting all existing discount policies...")
+    db.query(BrandPrePurchaseORM).delete()
+    db.query(BrandInventoryDiscountORM).delete()
+    db.query(BrandPromoORM).delete()
+    db.query(BrandCardBenefitORM).delete()
+    db.query(DiscountPolicyORM).delete()
+    db.commit()
+    
+    # 2. Staging 할인 정책 조회
+    staging_policies = db.query(StagingDiscountPolicyORM).filter_by(version_id=version_id).all()
+    
+    if not staging_policies:
+        logger.info(f"No discount policies found for version {version_id}")
+        return {
+            "success": True,
+            "message": "No discount policies to migrate",
+            "stats": {
+                "policies": 0,
+                "card_benefits": 0,
+                "promos": 0,
+                "inventory_discounts": 0,
+                "pre_purchases": 0
+            }
+        }
+    
+    policy_count = 0
+    card_benefit_count = 0
+    promo_count = 0
+    inventory_discount_count = 0
+    pre_purchase_count = 0
+    
+    for staging_policy in staging_policies:
+        # 3. Staging에서 Main으로 ID 매핑
+        # Brand ID 매핑
+        staging_brand = db.query(StagingBrandORM).filter_by(id=staging_policy.brand_id).first()
+        if not staging_brand:
+            logger.warning(f"Skipping policy {staging_policy.id}: Staging brand not found")
+            continue
+            
+        main_brand = db.query(BrandORM).filter_by(name=staging_brand.name).first()
+        
+        # Vehicle Line ID 매핑
+        staging_vehicle_line = db.query(StagingVehicleLineORM).filter_by(id=staging_policy.vehicle_line_id).first()
+        if not staging_vehicle_line:
+            logger.warning(f"Skipping policy {staging_policy.id}: Staging vehicle line not found")
+            continue
+            
+        main_vehicle_line = db.query(VehicleLineORM).filter_by(
+            brand_id=main_brand.id,
+            name=staging_vehicle_line.name
+        ).first()
+        
+        # Trim ID 매핑
+        staging_trim = db.query(StagingTrimORM).filter_by(id=staging_policy.trim_id).first()
+        if not staging_trim:
+            logger.warning(f"Skipping policy {staging_policy.id}: Staging trim not found")
+            continue
+            
+        main_trim = db.query(TrimORM).filter_by(
+            model_id=main_vehicle_line.id,  # vehicle_line을 통해 모델 찾기
+            name=staging_trim.name
+        ).first()
+        
+        if not main_brand or not main_vehicle_line or not main_trim:
+            logger.warning(f"Skipping policy {staging_policy.id}: Could not find main references")
+            continue
+        
+        # 4. Main 할인 정책 생성
+        main_policy = DiscountPolicyORM(
+            brand_id=main_brand.id,
+            vehicle_line_id=main_vehicle_line.id,
+            trim_id=main_trim.id,
+            policy_type=staging_policy.policy_type,
+            title=staging_policy.title,
+            description=staging_policy.description,
+            valid_from=staging_policy.valid_from,
+            valid_to=staging_policy.valid_to,
+            is_active=staging_policy.is_active
+        )
+        db.add(main_policy)
+        db.flush()
+        policy_count += 1
+        
+        # 5. 정책 유형별 세부 정보 마이그레이션
+        if staging_policy.policy_type == "CARD_BENEFIT":
+            card_benefits = db.query(StagingBrandCardBenefitORM).filter_by(
+                discount_policy_id=staging_policy.id
+            ).all()
+            
+            for card_benefit in card_benefits:
+                main_card_benefit = BrandCardBenefitORM(
+                    discount_policy_id=main_policy.id,
+                    card_partner=card_benefit.card_partner,
+                    cashback_rate=card_benefit.cashback_rate,
+                    title=card_benefit.title,
+                    description=card_benefit.description,
+                    valid_from=card_benefit.valid_from,
+                    valid_to=card_benefit.valid_to,
+                    is_active=card_benefit.is_active
+                )
+                db.add(main_card_benefit)
+                card_benefit_count += 1
+        
+        elif staging_policy.policy_type == "BRAND_PROMO":
+            promos = db.query(StagingBrandPromoORM).filter_by(
+                discount_policy_id=staging_policy.id
+            ).all()
+            
+            for promo in promos:
+                main_promo = BrandPromoORM(
+                    discount_policy_id=main_policy.id,
+                    discount_rate=promo.discount_rate,
+                    discount_amount=promo.discount_amount,
+                    title=promo.title,
+                    description=promo.description,
+                    valid_from=promo.valid_from,
+                    valid_to=promo.valid_to,
+                    is_active=promo.is_active
+                )
+                db.add(main_promo)
+                promo_count += 1
+        
+        elif staging_policy.policy_type == "INVENTORY":
+            inventory_discounts = db.query(StagingBrandInventoryDiscountORM).filter_by(
+                discount_policy_id=staging_policy.id
+            ).all()
+            
+            for inventory_discount in inventory_discounts:
+                main_inventory_discount = BrandInventoryDiscountORM(
+                    discount_policy_id=main_policy.id,
+                    inventory_level_threshold=inventory_discount.inventory_level_threshold,
+                    discount_rate=inventory_discount.discount_rate,
+                    title=inventory_discount.title,
+                    description=inventory_discount.description,
+                    valid_from=inventory_discount.valid_from,
+                    valid_to=inventory_discount.valid_to,
+                    is_active=inventory_discount.is_active
+                )
+                db.add(main_inventory_discount)
+                inventory_discount_count += 1
+        
+        elif staging_policy.policy_type == "PRE_PURCHASE":
+            pre_purchases = db.query(StagingBrandPrePurchaseORM).filter_by(
+                discount_policy_id=staging_policy.id
+            ).all()
+            
+            for pre_purchase in pre_purchases:
+                main_pre_purchase = BrandPrePurchaseORM(
+                    discount_policy_id=main_policy.id,
+                    event_type=pre_purchase.event_type,
+                    discount_rate=pre_purchase.discount_rate,
+                    discount_amount=pre_purchase.discount_amount,
+                    title=pre_purchase.title,
+                    description=pre_purchase.description,
+                    pre_purchase_start=pre_purchase.pre_purchase_start,
+                    valid_from=pre_purchase.valid_from,
+                    valid_to=pre_purchase.valid_to,
+                    is_active=pre_purchase.is_active
+                )
+                db.add(main_pre_purchase)
+                pre_purchase_count += 1
+    
+    # 6. 커밋
+    db.commit()
+    
+    logger.info(f"Discount policy migration completed for version {version_id}")
+    logger.info(f"Migrated: {policy_count} policies, {card_benefit_count} card benefits, "
+               f"{promo_count} promos, {inventory_discount_count} inventory discounts, "
+               f"{pre_purchase_count} pre-purchases")
+    
+    return {
+        "success": True,
+        "message": f"Discount policies migrated successfully",
+        "stats": {
+            "policies": policy_count,
+            "card_benefits": card_benefit_count,
+            "promos": promo_count,
+            "inventory_discounts": inventory_discount_count,
+            "pre_purchases": pre_purchase_count
+        }
+    }
