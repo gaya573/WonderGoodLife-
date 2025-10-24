@@ -4,7 +4,7 @@ Ports - 인터페이스 정의 (추상화)
 """
 from abc import ABC, abstractmethod
 from typing import List, Optional, Dict
-from ..domain.entities import Brand, Model, Trim, TrimCarColor, OptionTitle, OptionPrice, StagingOption, DiscountPolicy, BrandCardBenefit, BrandPromo, BrandInventoryDiscount, BrandPrePurchase, PolicyType
+from ..domain.entities import Brand, Model, Trim, TrimCarColor, OptionTitle, OptionPrice, StagingOption, StagingDiscountPolicy, StagingBrandCardBenefit, StagingBrandPromo, StagingBrandInventoryDiscount, StagingBrandPrePurchase, PolicyType
 
 
 # ===== Repository Ports =====
@@ -171,30 +171,30 @@ class ExcelParser(ABC):
 
 
 # ===== 할인 정책 Repository Ports =====
-class DiscountPolicyRepository(ABC):
+class StagingDiscountPolicyRepository(ABC):
     """할인 정책 저장소 인터페이스"""
     
     @abstractmethod
-    def create(self, policy: DiscountPolicy) -> DiscountPolicy:
+    def create(self, policy: StagingDiscountPolicy) -> StagingDiscountPolicy:
         pass
     
     @abstractmethod
-    def find_by_id(self, policy_id: int) -> Optional[DiscountPolicy]:
+    def find_by_id(self, policy_id: int) -> Optional[StagingDiscountPolicy]:
         pass
     
     @abstractmethod
-    def find_by_brand_trim_version(self, brand_id: int, trim_id: int, version_id: int) -> List[DiscountPolicy]:
+    def find_by_brand_trim_version(self, brand_id: int, trim_id: int, version_id: int) -> List[StagingDiscountPolicy]:
         pass
     
     @abstractmethod
-    def find_by_version(self, version_id: int) -> List[DiscountPolicy]:
+    def find_by_version(self, version_id: int) -> List[StagingDiscountPolicy]:
         pass
     
     @abstractmethod
     def find_all(self, brand_id: Optional[int] = None, trim_id: Optional[int] = None, 
                  version_id: Optional[int] = None, policy_type: Optional[PolicyType] = None,
                  is_active: Optional[bool] = None, limit: int = 20, offset: int = 0,
-                 sort_by: str = "created_at", order: str = "desc") -> List[DiscountPolicy]:
+                 sort_by: str = "created_at", order: str = "desc") -> List[StagingDiscountPolicy]:
         pass
     
     @abstractmethod
@@ -204,7 +204,7 @@ class DiscountPolicyRepository(ABC):
         pass
     
     @abstractmethod
-    def update(self, policy_id: int, policy: DiscountPolicy) -> DiscountPolicy:
+    def update(self, policy_id: int, policy: StagingDiscountPolicy) -> StagingDiscountPolicy:
         pass
     
     @abstractmethod
@@ -212,33 +212,33 @@ class DiscountPolicyRepository(ABC):
         pass
 
 
-class BrandCardBenefitRepository(ABC):
+class StagingBrandCardBenefitRepository(ABC):
     """카드사 제휴 저장소 인터페이스"""
     
     @abstractmethod
-    def create(self, benefit: BrandCardBenefit) -> BrandCardBenefit:
+    def create(self, benefit: StagingBrandCardBenefit) -> StagingBrandCardBenefit:
         pass
     
     @abstractmethod
-    def create_bulk(self, benefits: List[BrandCardBenefit]) -> List[BrandCardBenefit]:
+    def create_bulk(self, benefits: List[StagingBrandCardBenefit]) -> List[StagingBrandCardBenefit]:
         pass
     
     @abstractmethod
-    def find_by_id(self, benefit_id: int) -> Optional[BrandCardBenefit]:
+    def find_by_id(self, benefit_id: int) -> Optional[StagingBrandCardBenefit]:
         pass
     
     @abstractmethod
-    def find_by_policy_id(self, policy_id: int) -> List[BrandCardBenefit]:
+    def find_by_policy_id(self, policy_id: int) -> List[StagingBrandCardBenefit]:
         pass
     
     @abstractmethod
     def find_all(self, policy_id: Optional[int] = None, card_partner: Optional[str] = None,
                  is_active: Optional[bool] = None, limit: int = 20, offset: int = 0,
-                 sort_by: str = "created_at", order: str = "desc") -> List[BrandCardBenefit]:
+                 sort_by: str = "created_at", order: str = "desc") -> List[StagingBrandCardBenefit]:
         pass
     
     @abstractmethod
-    def update(self, benefit_id: int, benefit: BrandCardBenefit) -> BrandCardBenefit:
+    def update(self, benefit_id: int, benefit: StagingBrandCardBenefit) -> StagingBrandCardBenefit:
         pass
     
     @abstractmethod
@@ -246,33 +246,33 @@ class BrandCardBenefitRepository(ABC):
         pass
 
 
-class BrandPromoRepository(ABC):
+class StagingBrandPromoRepository(ABC):
     """브랜드 프로모션 저장소 인터페이스"""
     
     @abstractmethod
-    def create(self, promo: BrandPromo) -> BrandPromo:
+    def create(self, promo: StagingBrandPromo) -> StagingBrandPromo:
         pass
     
     @abstractmethod
-    def create_bulk(self, promos: List[BrandPromo]) -> List[BrandPromo]:
+    def create_bulk(self, promos: List[StagingBrandPromo]) -> List[StagingBrandPromo]:
         pass
     
     @abstractmethod
-    def find_by_id(self, promo_id: int) -> Optional[BrandPromo]:
+    def find_by_id(self, promo_id: int) -> Optional[StagingBrandPromo]:
         pass
     
     @abstractmethod
-    def find_by_policy_id(self, policy_id: int) -> List[BrandPromo]:
+    def find_by_policy_id(self, policy_id: int) -> List[StagingBrandPromo]:
         pass
     
     @abstractmethod
     def find_all(self, policy_id: Optional[int] = None, is_active: Optional[bool] = None,
                  limit: int = 20, offset: int = 0, sort_by: str = "created_at",
-                 order: str = "desc") -> List[BrandPromo]:
+                 order: str = "desc") -> List[StagingBrandPromo]:
         pass
     
     @abstractmethod
-    def update(self, promo_id: int, promo: BrandPromo) -> BrandPromo:
+    def update(self, promo_id: int, promo: StagingBrandPromo) -> StagingBrandPromo:
         pass
     
     @abstractmethod
@@ -280,33 +280,33 @@ class BrandPromoRepository(ABC):
         pass
 
 
-class BrandInventoryDiscountRepository(ABC):
+class StagingBrandInventoryDiscountRepository(ABC):
     """재고 할인 저장소 인터페이스"""
     
     @abstractmethod
-    def create(self, discount: BrandInventoryDiscount) -> BrandInventoryDiscount:
+    def create(self, discount: StagingBrandInventoryDiscount) -> StagingBrandInventoryDiscount:
         pass
     
     @abstractmethod
-    def create_bulk(self, discounts: List[BrandInventoryDiscount]) -> List[BrandInventoryDiscount]:
+    def create_bulk(self, discounts: List[StagingBrandInventoryDiscount]) -> List[StagingBrandInventoryDiscount]:
         pass
     
     @abstractmethod
-    def find_by_id(self, discount_id: int) -> Optional[BrandInventoryDiscount]:
+    def find_by_id(self, discount_id: int) -> Optional[StagingBrandInventoryDiscount]:
         pass
     
     @abstractmethod
-    def find_by_policy_id(self, policy_id: int) -> List[BrandInventoryDiscount]:
+    def find_by_policy_id(self, policy_id: int) -> List[StagingBrandInventoryDiscount]:
         pass
     
     @abstractmethod
     def find_all(self, policy_id: Optional[int] = None, is_active: Optional[bool] = None,
                  limit: int = 20, offset: int = 0, sort_by: str = "created_at",
-                 order: str = "desc") -> List[BrandInventoryDiscount]:
+                 order: str = "desc") -> List[StagingBrandInventoryDiscount]:
         pass
     
     @abstractmethod
-    def update(self, discount_id: int, discount: BrandInventoryDiscount) -> BrandInventoryDiscount:
+    def update(self, discount_id: int, discount: StagingBrandInventoryDiscount) -> StagingBrandInventoryDiscount:
         pass
     
     @abstractmethod
@@ -314,33 +314,33 @@ class BrandInventoryDiscountRepository(ABC):
         pass
 
 
-class BrandPrePurchaseRepository(ABC):
+class StagingBrandPrePurchaseRepository(ABC):
     """선구매 할인 저장소 인터페이스"""
     
     @abstractmethod
-    def create(self, pre_purchase: BrandPrePurchase) -> BrandPrePurchase:
+    def create(self, pre_purchase: StagingBrandPrePurchase) -> StagingBrandPrePurchase:
         pass
     
     @abstractmethod
-    def create_bulk(self, pre_purchases: List[BrandPrePurchase]) -> List[BrandPrePurchase]:
+    def create_bulk(self, pre_purchases: List[StagingBrandPrePurchase]) -> List[StagingBrandPrePurchase]:
         pass
     
     @abstractmethod
-    def find_by_id(self, pre_purchase_id: int) -> Optional[BrandPrePurchase]:
+    def find_by_id(self, pre_purchase_id: int) -> Optional[StagingBrandPrePurchase]:
         pass
     
     @abstractmethod
-    def find_by_policy_id(self, policy_id: int) -> List[BrandPrePurchase]:
+    def find_by_policy_id(self, policy_id: int) -> List[StagingBrandPrePurchase]:
         pass
     
     @abstractmethod
     def find_all(self, policy_id: Optional[int] = None, event_type: Optional[str] = None,
                  is_active: Optional[bool] = None, limit: int = 20, offset: int = 0,
-                 sort_by: str = "created_at", order: str = "desc") -> List[BrandPrePurchase]:
+                 sort_by: str = "created_at", order: str = "desc") -> List[StagingBrandPrePurchase]:
         pass
     
     @abstractmethod
-    def update(self, pre_purchase_id: int, pre_purchase: BrandPrePurchase) -> BrandPrePurchase:
+    def update(self, pre_purchase_id: int, pre_purchase: StagingBrandPrePurchase) -> StagingBrandPrePurchase:
         pass
     
     @abstractmethod

@@ -485,76 +485,16 @@ class BatchJobORM(Base):
     error_message = Column(Text, nullable=True)
     result_data = Column(JSON, nullable=True)
 
+# ===== Staging 할인 정책 관리 =====
 
-# ===== Event Management =====
-
-class EventORM(Base):
-    """이벤트 테이블"""
-    __tablename__ = "events"
+class StagingDiscountPolicyORM(Base):
+    """할인 정책 허브 테이블 - 브랜드, Vehicle Line, 트림, 버전 단위"""
+    __tablename__ = "staging_discount_policy"
     
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String(200), nullable=False)
-    description = Column(Text, nullable=True)
-    event_type = Column(SQLEnum(EventType), nullable=False, default=EventType.PROMOTION)
-    status = Column(SQLEnum(EventStatus), nullable=False, default=EventStatus.DRAFT)
-    
-    # 이벤트 기간
-    start_date = Column(DateTime, nullable=True)
-    end_date = Column(DateTime, nullable=True)
-    
-    # 이벤트 위치
-    location = Column(String(200), nullable=True)
-    address = Column(String(500), nullable=True)
-    
-    # 이벤트 상세 정보
-    max_participants = Column(Integer, nullable=True)
-    current_participants = Column(Integer, nullable=False, default=0)
-    registration_fee = Column(Integer, nullable=True)
-    
-    # 관련 차량 (선택사항)
-    related_brand_id = Column(Integer, nullable=True)
-    related_model_id = Column(Integer, nullable=True)
-    
-    # 생성자 정보
-    created_by = Column(String(100), nullable=True)
-    created_at = Column(DateTime, nullable=False, default=lambda: datetime.utcnow())
-    updated_at = Column(DateTime, nullable=True, onupdate=datetime.utcnow)
-    
-    # 관계
-    registrations = relationship("EventRegistrationORM", back_populates="event", cascade="all, delete-orphan")
-
-
-class EventRegistrationORM(Base):
-    """이벤트 등록 테이블"""
-    __tablename__ = "event_registrations"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    event_id = Column(Integer, ForeignKey("events.id"), nullable=False)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    registration_date = Column(DateTime, nullable=False, default=datetime.utcnow)
-    
-    # 추가 정보
-    phone_number = Column(String(20), nullable=True)
-    email = Column(String(100), nullable=True)
-    notes = Column(Text, nullable=True)
-    
-    # 상태
-    status = Column(String(20), nullable=False, default="confirmed")
-    
-    # 관계
-    event = relationship("EventORM", back_populates="registrations")
-    user = relationship("UserORM", foreign_keys=[user_id])
-
-
-# ===== 할인 정책 관리 =====
-
-class DiscountPolicyORM(Base):
-    """할인 정책 허브 테이블 - 브랜드, 트림, 버전 단위"""
-    __tablename__ = "discount_policy"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    brand_id = Column(Integer, ForeignKey("brand.id"), nullable=False)
-    trim_id = Column(Integer, ForeignKey("trim.id"), nullable=False)
+    brand_id = Column(Integer, ForeignKey("staging_brand.id"), nullable=False)
+    vehicle_line_id = Column(Integer, ForeignKey("staging_vehicle_line.id"), nullable=False)
+    trim_id = Column(Integer, ForeignKey("staging_trim.id"), nullable=False)
     version_id = Column(Integer, ForeignKey("staging_version.id"), nullable=False)
     policy_type = Column(SQLEnum(PolicyType), nullable=False)
     title = Column(String(255), nullable=False)
@@ -567,23 +507,24 @@ class DiscountPolicyORM(Base):
     updated_at = Column(DateTime, nullable=True, onupdate=datetime.utcnow)
     
     # 관계
-    brand = relationship("BrandORM", foreign_keys=[brand_id])
-    trim = relationship("TrimORM", foreign_keys=[trim_id])
+    brand = relationship("StagingBrandORM", foreign_keys=[brand_id])
+    vehicle_line = relationship("StagingVehicleLineORM", foreign_keys=[vehicle_line_id])
+    trim = relationship("StagingTrimORM", foreign_keys=[trim_id])
     version = relationship("StagingVersionORM", foreign_keys=[version_id])
     
     # 할인 유형별 관계
-    card_benefits = relationship("BrandCardBenefitORM", back_populates="policy", cascade="all, delete-orphan")
-    promos = relationship("BrandPromoORM", back_populates="policy", cascade="all, delete-orphan")
-    inventory_discounts = relationship("BrandInventoryDiscountORM", back_populates="policy", cascade="all, delete-orphan")
-    pre_purchases = relationship("BrandPrePurchaseORM", back_populates="policy", cascade="all, delete-orphan")
+    card_benefits = relationship("StagingBrandCardBenefitORM", back_populates="policy", cascade="all, delete-orphan")
+    promos = relationship("StagingBrandPromoORM", back_populates="policy", cascade="all, delete-orphan")
+    inventory_discounts = relationship("StagingBrandInventoryDiscountORM", back_populates="policy", cascade="all, delete-orphan")
+    pre_purchases = relationship("StagingBrandPrePurchaseORM", back_populates="policy", cascade="all, delete-orphan")
 
 
-class BrandCardBenefitORM(Base):
+class StagingBrandCardBenefitORM(Base):
     """카드사 제휴 할인 테이블"""
-    __tablename__ = "brand_card_benefit"
+    __tablename__ = "staging_brand_card_benefit"
     
     id = Column(Integer, primary_key=True, index=True)
-    discount_policy_id = Column(Integer, ForeignKey("discount_policy.id"), nullable=False)
+    discount_policy_id = Column(Integer, ForeignKey("staging_discount_policy.id"), nullable=False)
     card_partner = Column(String(255), nullable=False)
     cashback_rate = Column(String(5), nullable=False)
     title = Column(String(255), nullable=False)
@@ -593,15 +534,15 @@ class BrandCardBenefitORM(Base):
     is_active = Column(Boolean, default=True)
     
     # 관계
-    policy = relationship("DiscountPolicyORM", back_populates="card_benefits")
+    policy = relationship("StagingDiscountPolicyORM", back_populates="card_benefits")
 
 
-class BrandPromoORM(Base):
+class StagingBrandPromoORM(Base):
     """브랜드 프로모션 할인 테이블"""
-    __tablename__ = "brand_promo"
+    __tablename__ = "staging_brand_promo"
     
     id = Column(Integer, primary_key=True, index=True)
-    discount_policy_id = Column(Integer, ForeignKey("discount_policy.id"), nullable=False)
+    discount_policy_id = Column(Integer, ForeignKey("staging_discount_policy.id"), nullable=False)
     discount_rate = Column(String(5), nullable=True)
     discount_amount = Column(Integer, nullable=True)
     title = Column(String(255), nullable=False)
@@ -611,15 +552,15 @@ class BrandPromoORM(Base):
     is_active = Column(Boolean, default=True)
     
     # 관계
-    policy = relationship("DiscountPolicyORM", back_populates="promos")
+    policy = relationship("StagingDiscountPolicyORM", back_populates="promos")
 
 
-class BrandInventoryDiscountORM(Base):
+class StagingBrandInventoryDiscountORM(Base):
     """재고 보유 할인 테이블"""
-    __tablename__ = "brand_inventory_discount"
+    __tablename__ = "staging_brand_inventory_discount"
     
     id = Column(Integer, primary_key=True, index=True)
-    discount_policy_id = Column(Integer, ForeignKey("discount_policy.id"), nullable=False)
+    discount_policy_id = Column(Integer, ForeignKey("staging_discount_policy.id"), nullable=False)
     inventory_level_threshold = Column(Integer, nullable=False)
     discount_rate = Column(String(5), nullable=False)
     title = Column(String(255), nullable=False)
@@ -629,15 +570,15 @@ class BrandInventoryDiscountORM(Base):
     is_active = Column(Boolean, default=True)
     
     # 관계
-    policy = relationship("DiscountPolicyORM", back_populates="inventory_discounts")
+    policy = relationship("StagingDiscountPolicyORM", back_populates="inventory_discounts")
 
 
-class BrandPrePurchaseORM(Base):
+class StagingBrandPrePurchaseORM(Base):
     """선구매/특가 할인 테이블"""
-    __tablename__ = "brand_pre_purchase"
+    __tablename__ = "staging_brand_pre_purchase"
     
     id = Column(Integer, primary_key=True, index=True)
-    discount_policy_id = Column(Integer, ForeignKey("discount_policy.id"), nullable=False)
+    discount_policy_id = Column(Integer, ForeignKey("staging_discount_policy.id"), nullable=False)
     event_type = Column(SQLEnum(EventTypeForPrePurchase), nullable=False)
     discount_rate = Column(String(5), nullable=True)
     discount_amount = Column(Integer, nullable=True)
@@ -649,4 +590,4 @@ class BrandPrePurchaseORM(Base):
     is_active = Column(Boolean, default=True)
     
     # 관계
-    policy = relationship("DiscountPolicyORM", back_populates="pre_purchases")
+    policy = relationship("StagingDiscountPolicyORM", back_populates="pre_purchases")

@@ -7,29 +7,29 @@ from sqlalchemy import and_, desc, asc
 from datetime import datetime
 
 from ..domain.entities import (
-    DiscountPolicy, BrandCardBenefit, BrandPromo, 
-    BrandInventoryDiscount, BrandPrePurchase, PolicyType
+    StagingDiscountPolicy, StagingBrandCardBenefit, StagingBrandPromo, 
+    StagingBrandInventoryDiscount, StagingBrandPrePurchase, PolicyType
 )
 from ..application.ports import (
-    DiscountPolicyRepository, BrandCardBenefitRepository,
-    BrandPromoRepository, BrandInventoryDiscountRepository,
-    BrandPrePurchaseRepository
+    StagingDiscountPolicyRepository, StagingBrandCardBenefitRepository,
+    StagingBrandPromoRepository, StagingBrandInventoryDiscountRepository,
+    StagingBrandPrePurchaseRepository
 )
 from .orm_models import (
-    DiscountPolicyORM, BrandCardBenefitORM, BrandPromoORM,
-    BrandInventoryDiscountORM, BrandPrePurchaseORM
+    StagingDiscountPolicyORM, StagingBrandCardBenefitORM, StagingBrandPromoORM,
+    StagingBrandInventoryDiscountORM, StagingBrandPrePurchaseORM
 )
 
 
-class SQLAlchemyDiscountPolicyRepository(DiscountPolicyRepository):
+class SQLAlchemyStagingDiscountPolicyRepository(StagingDiscountPolicyRepository):
     """할인 정책 Repository 구현"""
     
     def __init__(self, db: Session):
         self.db = db
     
-    def create(self, policy: DiscountPolicy) -> DiscountPolicy:
+    def create(self, policy: StagingDiscountPolicy) -> StagingDiscountPolicy:
         """할인 정책 생성"""
-        policy_orm = DiscountPolicyORM(
+        policy_orm = StagingDiscountPolicyORM(
             brand_id=policy.brand_id,
             vehicle_line_id=policy.vehicle_line_id,
             trim_id=policy.trim_id,
@@ -48,10 +48,10 @@ class SQLAlchemyDiscountPolicyRepository(DiscountPolicyRepository):
         
         return self._orm_to_entity(policy_orm)
     
-    def find_by_id(self, policy_id: int) -> Optional[DiscountPolicy]:
+    def find_by_id(self, policy_id: int) -> Optional[StagingDiscountPolicy]:
         """ID로 할인 정책 조회"""
-        policy_orm = self.db.query(DiscountPolicyORM).filter(
-            DiscountPolicyORM.id == policy_id
+        policy_orm = self.db.query(StagingDiscountPolicyORM).filter(
+            StagingDiscountPolicyORM.id == policy_id
         ).first()
         
         if not policy_orm:
@@ -59,22 +59,22 @@ class SQLAlchemyDiscountPolicyRepository(DiscountPolicyRepository):
         
         return self._orm_to_entity(policy_orm)
     
-    def find_by_brand_trim_version(self, brand_id: int, trim_id: int, version_id: int) -> List[DiscountPolicy]:
+    def find_by_brand_trim_version(self, brand_id: int, trim_id: int, version_id: int) -> List[StagingDiscountPolicy]:
         """브랜드, 트림, 버전으로 할인 정책 조회"""
-        policies_orm = self.db.query(DiscountPolicyORM).filter(
+        policies_orm = self.db.query(StagingDiscountPolicyORM).filter(
             and_(
-                DiscountPolicyORM.brand_id == brand_id,
-                DiscountPolicyORM.trim_id == trim_id,
-                DiscountPolicyORM.version_id == version_id
+                StagingDiscountPolicyORM.brand_id == brand_id,
+                StagingDiscountPolicyORM.trim_id == trim_id,
+                StagingDiscountPolicyORM.version_id == version_id
             )
         ).all()
         
         return [self._orm_to_entity(policy_orm) for policy_orm in policies_orm]
     
-    def find_by_version(self, version_id: int) -> List[DiscountPolicy]:
+    def find_by_version(self, version_id: int) -> List[StagingDiscountPolicy]:
         """버전별 할인 정책 조회"""
-        policies_orm = self.db.query(DiscountPolicyORM).filter(
-            DiscountPolicyORM.version_id == version_id
+        policies_orm = self.db.query(StagingDiscountPolicyORM).filter(
+            StagingDiscountPolicyORM.version_id == version_id
         ).all()
         
         return [self._orm_to_entity(policy_orm) for policy_orm in policies_orm]
@@ -88,29 +88,29 @@ class SQLAlchemyDiscountPolicyRepository(DiscountPolicyRepository):
                  limit: int = 20,
                  offset: int = 0,
                  sort_by: str = "created_at",
-                 order: str = "desc") -> List[DiscountPolicy]:
+                  order: str = "desc") -> List[StagingDiscountPolicy]:
         """할인 정책 목록 조회 (페이지네이션)"""
-        query = self.db.query(DiscountPolicyORM)
+        query = self.db.query(StagingDiscountPolicyORM)
         
         # 필터링
         filters = []
         if brand_id:
-            filters.append(DiscountPolicyORM.brand_id == brand_id)
+            filters.append(StagingDiscountPolicyORM.brand_id == brand_id)
         if trim_id:
-            filters.append(DiscountPolicyORM.trim_id == trim_id)
+            filters.append(StagingDiscountPolicyORM.trim_id == trim_id)
         if version_id:
-            filters.append(DiscountPolicyORM.version_id == version_id)
+            filters.append(StagingDiscountPolicyORM.version_id == version_id)
         if policy_type:
-            filters.append(DiscountPolicyORM.policy_type == policy_type)
+            filters.append(StagingDiscountPolicyORM.policy_type == policy_type)
         if is_active is not None:
-            filters.append(DiscountPolicyORM.is_active == is_active)
+            filters.append(StagingDiscountPolicyORM.is_active == is_active)
         
         if filters:
             query = query.filter(and_(*filters))
         
         # 정렬
-        if hasattr(DiscountPolicyORM, sort_by):
-            sort_column = getattr(DiscountPolicyORM, sort_by)
+        if hasattr(StagingDiscountPolicyORM, sort_by):
+            sort_column = getattr(StagingDiscountPolicyORM, sort_by)
             if order.lower() == "desc":
                 query = query.order_by(desc(sort_column))
             else:
@@ -128,30 +128,30 @@ class SQLAlchemyDiscountPolicyRepository(DiscountPolicyRepository):
               policy_type: Optional[PolicyType] = None,
               is_active: Optional[bool] = None) -> int:
         """할인 정책 개수 조회"""
-        query = self.db.query(DiscountPolicyORM)
+        query = self.db.query(StagingDiscountPolicyORM)
         
         # 필터링
         filters = []
         if brand_id:
-            filters.append(DiscountPolicyORM.brand_id == brand_id)
+            filters.append(StagingDiscountPolicyORM.brand_id == brand_id)
         if trim_id:
-            filters.append(DiscountPolicyORM.trim_id == trim_id)
+            filters.append(StagingDiscountPolicyORM.trim_id == trim_id)
         if version_id:
-            filters.append(DiscountPolicyORM.version_id == version_id)
+            filters.append(StagingDiscountPolicyORM.version_id == version_id)
         if policy_type:
-            filters.append(DiscountPolicyORM.policy_type == policy_type)
+            filters.append(StagingDiscountPolicyORM.policy_type == policy_type)
         if is_active is not None:
-            filters.append(DiscountPolicyORM.is_active == is_active)
+            filters.append(StagingDiscountPolicyORM.is_active == is_active)
         
         if filters:
             query = query.filter(and_(*filters))
         
         return query.count()
     
-    def update(self, policy_id: int, policy: DiscountPolicy) -> DiscountPolicy:
+    def update(self, policy_id: int, policy: StagingDiscountPolicy) -> StagingDiscountPolicy:
         """할인 정책 수정"""
-        policy_orm = self.db.query(DiscountPolicyORM).filter(
-            DiscountPolicyORM.id == policy_id
+        policy_orm = self.db.query(StagingDiscountPolicyORM).filter(
+            StagingDiscountPolicyORM.id == policy_id
         ).first()
         
         if not policy_orm:
@@ -172,8 +172,8 @@ class SQLAlchemyDiscountPolicyRepository(DiscountPolicyRepository):
     
     def delete(self, policy_id: int) -> bool:
         """할인 정책 삭제"""
-        policy_orm = self.db.query(DiscountPolicyORM).filter(
-            DiscountPolicyORM.id == policy_id
+        policy_orm = self.db.query(StagingDiscountPolicyORM).filter(
+            StagingDiscountPolicyORM.id == policy_id
         ).first()
         
         if not policy_orm:
@@ -184,9 +184,9 @@ class SQLAlchemyDiscountPolicyRepository(DiscountPolicyRepository):
         
         return True
     
-    def _orm_to_entity(self, policy_orm: DiscountPolicyORM) -> DiscountPolicy:
+    def _orm_to_entity(self, policy_orm: StagingDiscountPolicyORM) -> StagingDiscountPolicy:
         """ORM을 도메인 엔티티로 변환"""
-        return DiscountPolicy(
+        return StagingDiscountPolicy(
             id=policy_orm.id,
             brand_id=policy_orm.brand_id,
             vehicle_line_id=policy_orm.vehicle_line_id,
@@ -201,15 +201,15 @@ class SQLAlchemyDiscountPolicyRepository(DiscountPolicyRepository):
         )
 
 
-class SQLAlchemyBrandCardBenefitRepository(BrandCardBenefitRepository):
+class SQLAlchemyStagingBrandCardBenefitRepository(StagingBrandCardBenefitRepository):
     """카드사 제휴 Repository 구현"""
     
     def __init__(self, db: Session):
         self.db = db
     
-    def create(self, benefit: BrandCardBenefit) -> BrandCardBenefit:
+    def create(self, benefit: StagingBrandCardBenefit) -> StagingBrandCardBenefit:
         """카드사 제휴 생성"""
-        benefit_orm = BrandCardBenefitORM(
+        benefit_orm = StagingBrandCardBenefitORM(
             discount_policy_id=benefit.discount_policy_id,
             card_partner=benefit.card_partner,
             cashback_rate=str(benefit.cashback_rate),
@@ -226,11 +226,11 @@ class SQLAlchemyBrandCardBenefitRepository(BrandCardBenefitRepository):
         
         return self._orm_to_entity(benefit_orm)
     
-    def create_bulk(self, benefits: List[BrandCardBenefit]) -> List[BrandCardBenefit]:
+    def create_bulk(self, benefits: List[StagingBrandCardBenefit]) -> List[StagingBrandCardBenefit]:
         """카드사 제휴 일괄 생성"""
         benefit_orms = []
         for benefit in benefits:
-            benefit_orm = BrandCardBenefitORM(
+            benefit_orm = StagingBrandCardBenefitORM(
                 discount_policy_id=benefit.discount_policy_id,
                 card_partner=benefit.card_partner,
                 cashback_rate=str(benefit.cashback_rate),
@@ -250,10 +250,10 @@ class SQLAlchemyBrandCardBenefitRepository(BrandCardBenefitRepository):
         
         return [self._orm_to_entity(benefit_orm) for benefit_orm in benefit_orms]
     
-    def find_by_id(self, benefit_id: int) -> Optional[BrandCardBenefit]:
+    def find_by_id(self, benefit_id: int) -> Optional[StagingBrandCardBenefit]:
         """ID로 카드사 제휴 조회"""
-        benefit_orm = self.db.query(BrandCardBenefitORM).filter(
-            BrandCardBenefitORM.id == benefit_id
+        benefit_orm = self.db.query(StagingBrandCardBenefitORM).filter(
+            StagingBrandCardBenefitORM.id == benefit_id
         ).first()
         
         if not benefit_orm:
@@ -261,10 +261,10 @@ class SQLAlchemyBrandCardBenefitRepository(BrandCardBenefitRepository):
         
         return self._orm_to_entity(benefit_orm)
     
-    def find_by_policy_id(self, policy_id: int) -> List[BrandCardBenefit]:
+    def find_by_policy_id(self, policy_id: int) -> List[StagingBrandCardBenefit]:
         """정책 ID로 카드사 제휴 조회"""
-        benefits_orm = self.db.query(BrandCardBenefitORM).filter(
-            BrandCardBenefitORM.discount_policy_id == policy_id
+        benefits_orm = self.db.query(StagingBrandCardBenefitORM).filter(
+            StagingBrandCardBenefitORM.discount_policy_id == policy_id
         ).all()
         
         return [self._orm_to_entity(benefit_orm) for benefit_orm in benefits_orm]
@@ -276,25 +276,25 @@ class SQLAlchemyBrandCardBenefitRepository(BrandCardBenefitRepository):
                  limit: int = 20,
                  offset: int = 0,
                  sort_by: str = "created_at",
-                 order: str = "desc") -> List[BrandCardBenefit]:
+                 order: str = "desc") -> List[StagingBrandCardBenefit]:
         """카드사 제휴 목록 조회 (페이지네이션)"""
-        query = self.db.query(BrandCardBenefitORM)
+        query = self.db.query(StagingBrandCardBenefitORM)
         
         # 필터링
         filters = []
         if policy_id:
-            filters.append(BrandCardBenefitORM.discount_policy_id == policy_id)
+            filters.append(StagingBrandCardBenefitORM.discount_policy_id == policy_id)
         if card_partner:
-            filters.append(BrandCardBenefitORM.card_partner.ilike(f"%{card_partner}%"))
+            filters.append(StagingBrandCardBenefitORM.card_partner.ilike(f"%{card_partner}%"))
         if is_active is not None:
-            filters.append(BrandCardBenefitORM.is_active == is_active)
+            filters.append(StagingBrandCardBenefitORM.is_active == is_active)
         
         if filters:
             query = query.filter(and_(*filters))
         
         # 정렬
-        if hasattr(BrandCardBenefitORM, sort_by):
-            sort_column = getattr(BrandCardBenefitORM, sort_by)
+        if hasattr(StagingBrandCardBenefitORM, sort_by):
+            sort_column = getattr(StagingBrandCardBenefitORM, sort_by)
             if order.lower() == "desc":
                 query = query.order_by(desc(sort_column))
             else:
@@ -305,10 +305,10 @@ class SQLAlchemyBrandCardBenefitRepository(BrandCardBenefitRepository):
         
         return [self._orm_to_entity(benefit_orm) for benefit_orm in benefits_orm]
     
-    def update(self, benefit_id: int, benefit: BrandCardBenefit) -> BrandCardBenefit:
+    def update(self, benefit_id: int, benefit: StagingBrandCardBenefit) -> StagingBrandCardBenefit:
         """카드사 제휴 수정"""
-        benefit_orm = self.db.query(BrandCardBenefitORM).filter(
-            BrandCardBenefitORM.id == benefit_id
+        benefit_orm = self.db.query(StagingBrandCardBenefitORM).filter(
+            StagingBrandCardBenefitORM.id == benefit_id
         ).first()
         
         if not benefit_orm:
@@ -330,8 +330,8 @@ class SQLAlchemyBrandCardBenefitRepository(BrandCardBenefitRepository):
     
     def delete(self, benefit_id: int) -> bool:
         """카드사 제휴 삭제"""
-        benefit_orm = self.db.query(BrandCardBenefitORM).filter(
-            BrandCardBenefitORM.id == benefit_id
+        benefit_orm = self.db.query(StagingBrandCardBenefitORM).filter(
+            StagingBrandCardBenefitORM.id == benefit_id
         ).first()
         
         if not benefit_orm:
@@ -342,9 +342,9 @@ class SQLAlchemyBrandCardBenefitRepository(BrandCardBenefitRepository):
         
         return True
     
-    def _orm_to_entity(self, benefit_orm: BrandCardBenefitORM) -> BrandCardBenefit:
+    def _orm_to_entity(self, benefit_orm: StagingBrandCardBenefitORM) -> StagingBrandCardBenefit:
         """ORM을 도메인 엔티티로 변환"""
-        return BrandCardBenefit(
+        return StagingBrandCardBenefit(
             id=benefit_orm.id,
             discount_policy_id=benefit_orm.discount_policy_id,
             card_partner=benefit_orm.card_partner,
@@ -357,14 +357,14 @@ class SQLAlchemyBrandCardBenefitRepository(BrandCardBenefitRepository):
         )
 
 
-class SQLAlchemyBrandPromoRepository(BrandPromoRepository):
+class SQLAlchemyStagingBrandPromoRepository(StagingBrandPromoRepository):
     """브랜드 프로모션 Repository 구현"""
     
     def __init__(self, db: Session):
         self.db = db
     
-    def create(self, promo: BrandPromo) -> BrandPromo:
-        promo_orm = BrandPromoORM(
+    def create(self, promo: StagingBrandPromo) -> StagingBrandPromo:
+        promo_orm = StagingBrandPromoORM(
             discount_policy_id=promo.discount_policy_id,
             discount_rate=str(promo.discount_rate) if promo.discount_rate else None,
             discount_amount=promo.discount_amount,
@@ -379,10 +379,10 @@ class SQLAlchemyBrandPromoRepository(BrandPromoRepository):
         self.db.refresh(promo_orm)
         return self._orm_to_entity(promo_orm)
     
-    def create_bulk(self, promos: List[BrandPromo]) -> List[BrandPromo]:
+    def create_bulk(self, promos: List[StagingBrandPromo]) -> List[StagingBrandPromo]:
         promo_orms = []
         for promo in promos:
-            promo_orm = BrandPromoORM(
+            promo_orm = StagingBrandPromoORM(
                 discount_policy_id=promo.discount_policy_id,
                 discount_rate=str(promo.discount_rate) if promo.discount_rate else None,
                 discount_amount=promo.discount_amount,
@@ -399,27 +399,27 @@ class SQLAlchemyBrandPromoRepository(BrandPromoRepository):
             self.db.refresh(promo_orm)
         return [self._orm_to_entity(promo_orm) for promo_orm in promo_orms]
     
-    def find_by_id(self, promo_id: int) -> Optional[BrandPromo]:
-        promo_orm = self.db.query(BrandPromoORM).filter(BrandPromoORM.id == promo_id).first()
+    def find_by_id(self, promo_id: int) -> Optional[StagingBrandPromo]:
+        promo_orm = self.db.query(StagingBrandPromoORM).filter(StagingBrandPromoORM.id == promo_id).first()
         return self._orm_to_entity(promo_orm) if promo_orm else None
     
-    def find_by_policy_id(self, policy_id: int) -> List[BrandPromo]:
-        promos_orm = self.db.query(BrandPromoORM).filter(BrandPromoORM.discount_policy_id == policy_id).all()
+    def find_by_policy_id(self, policy_id: int) -> List[StagingBrandPromo]:
+        promos_orm = self.db.query(StagingBrandPromoORM).filter(StagingBrandPromoORM.discount_policy_id == policy_id).all()
         return [self._orm_to_entity(promo_orm) for promo_orm in promos_orm]
     
     def find_all(self, policy_id: Optional[int] = None, is_active: Optional[bool] = None,
                  limit: int = 20, offset: int = 0, sort_by: str = "created_at",
-                 order: str = "desc") -> List[BrandPromo]:
-        query = self.db.query(BrandPromoORM)
+                 order: str = "desc") -> List[StagingBrandPromo]:
+        query = self.db.query(StagingBrandPromoORM)
         filters = []
         if policy_id:
-            filters.append(BrandPromoORM.discount_policy_id == policy_id)
+            filters.append(StagingBrandPromoORM.discount_policy_id == policy_id)
         if is_active is not None:
-            filters.append(BrandPromoORM.is_active == is_active)
+            filters.append(StagingBrandPromoORM.is_active == is_active)
         if filters:
             query = query.filter(and_(*filters))
-        if hasattr(BrandPromoORM, sort_by):
-            sort_column = getattr(BrandPromoORM, sort_by)
+        if hasattr(StagingBrandPromoORM, sort_by):
+            sort_column = getattr(StagingBrandPromoORM, sort_by)
             if order.lower() == "desc":
                 query = query.order_by(desc(sort_column))
             else:
@@ -427,8 +427,8 @@ class SQLAlchemyBrandPromoRepository(BrandPromoRepository):
         promos_orm = query.offset(offset).limit(limit).all()
         return [self._orm_to_entity(promo_orm) for promo_orm in promos_orm]
     
-    def update(self, promo_id: int, promo: BrandPromo) -> BrandPromo:
-        promo_orm = self.db.query(BrandPromoORM).filter(BrandPromoORM.id == promo_id).first()
+    def update(self, promo_id: int, promo: StagingBrandPromo) -> StagingBrandPromo:
+        promo_orm = self.db.query(StagingBrandPromoORM).filter(StagingBrandPromoORM.id == promo_id).first()
         if not promo_orm:
             raise ValueError(f"브랜드 프로모션을 찾을 수 없습니다: {promo_id}")
         promo_orm.discount_rate = str(promo.discount_rate) if promo.discount_rate else None
@@ -443,15 +443,15 @@ class SQLAlchemyBrandPromoRepository(BrandPromoRepository):
         return self._orm_to_entity(promo_orm)
     
     def delete(self, promo_id: int) -> bool:
-        promo_orm = self.db.query(BrandPromoORM).filter(BrandPromoORM.id == promo_id).first()
+        promo_orm = self.db.query(StagingBrandPromoORM).filter(StagingBrandPromoORM.id == promo_id).first()
         if not promo_orm:
             return False
         self.db.delete(promo_orm)
         self.db.commit()
         return True
     
-    def _orm_to_entity(self, promo_orm: BrandPromoORM) -> BrandPromo:
-        return BrandPromo(
+    def _orm_to_entity(self, promo_orm: StagingBrandPromoORM) -> StagingBrandPromo:
+        return StagingBrandPromo(
             id=promo_orm.id,
             discount_policy_id=promo_orm.discount_policy_id,
             discount_rate=float(promo_orm.discount_rate) if promo_orm.discount_rate else None,
@@ -464,14 +464,14 @@ class SQLAlchemyBrandPromoRepository(BrandPromoRepository):
         )
 
 
-class SQLAlchemyBrandInventoryDiscountRepository(BrandInventoryDiscountRepository):
+class SQLAlchemyStagingBrandInventoryDiscountRepository(StagingBrandInventoryDiscountRepository):
     """재고 할인 Repository 구현"""
     
     def __init__(self, db: Session):
         self.db = db
     
-    def create(self, discount: BrandInventoryDiscount) -> BrandInventoryDiscount:
-        discount_orm = BrandInventoryDiscountORM(
+    def create(self, discount: StagingBrandInventoryDiscount) -> StagingBrandInventoryDiscount:
+        discount_orm = StagingBrandInventoryDiscountORM(
             discount_policy_id=discount.discount_policy_id,
             inventory_level_threshold=discount.inventory_level_threshold,
             discount_rate=str(discount.discount_rate),
@@ -486,10 +486,10 @@ class SQLAlchemyBrandInventoryDiscountRepository(BrandInventoryDiscountRepositor
         self.db.refresh(discount_orm)
         return self._orm_to_entity(discount_orm)
     
-    def create_bulk(self, discounts: List[BrandInventoryDiscount]) -> List[BrandInventoryDiscount]:
+    def create_bulk(self, discounts: List[StagingBrandInventoryDiscount]) -> List[StagingBrandInventoryDiscount]:
         discount_orms = []
         for discount in discounts:
-            discount_orm = BrandInventoryDiscountORM(
+            discount_orm = StagingBrandInventoryDiscountORM(
                 discount_policy_id=discount.discount_policy_id,
                 inventory_level_threshold=discount.inventory_level_threshold,
                 discount_rate=str(discount.discount_rate),
@@ -506,27 +506,27 @@ class SQLAlchemyBrandInventoryDiscountRepository(BrandInventoryDiscountRepositor
             self.db.refresh(discount_orm)
         return [self._orm_to_entity(discount_orm) for discount_orm in discount_orms]
     
-    def find_by_id(self, discount_id: int) -> Optional[BrandInventoryDiscount]:
-        discount_orm = self.db.query(BrandInventoryDiscountORM).filter(BrandInventoryDiscountORM.id == discount_id).first()
+    def find_by_id(self, discount_id: int) -> Optional[StagingBrandInventoryDiscount]:
+        discount_orm = self.db.query(StagingBrandInventoryDiscountORM).filter(StagingBrandInventoryDiscountORM.id == discount_id).first()
         return self._orm_to_entity(discount_orm) if discount_orm else None
     
-    def find_by_policy_id(self, policy_id: int) -> List[BrandInventoryDiscount]:
-        discounts_orm = self.db.query(BrandInventoryDiscountORM).filter(BrandInventoryDiscountORM.discount_policy_id == policy_id).all()
+    def find_by_policy_id(self, policy_id: int) -> List[StagingBrandInventoryDiscount]:
+        discounts_orm = self.db.query(StagingBrandInventoryDiscountORM).filter(StagingBrandInventoryDiscountORM.discount_policy_id == policy_id).all()
         return [self._orm_to_entity(discount_orm) for discount_orm in discounts_orm]
     
     def find_all(self, policy_id: Optional[int] = None, is_active: Optional[bool] = None,
                  limit: int = 20, offset: int = 0, sort_by: str = "created_at",
-                 order: str = "desc") -> List[BrandInventoryDiscount]:
-        query = self.db.query(BrandInventoryDiscountORM)
+                 order: str = "desc") -> List[StagingBrandInventoryDiscount]:
+        query = self.db.query(StagingBrandInventoryDiscountORM)
         filters = []
         if policy_id:
-            filters.append(BrandInventoryDiscountORM.discount_policy_id == policy_id)
+            filters.append(StagingBrandInventoryDiscountORM.discount_policy_id == policy_id)
         if is_active is not None:
-            filters.append(BrandInventoryDiscountORM.is_active == is_active)
+            filters.append(StagingBrandInventoryDiscountORM.is_active == is_active)
         if filters:
             query = query.filter(and_(*filters))
-        if hasattr(BrandInventoryDiscountORM, sort_by):
-            sort_column = getattr(BrandInventoryDiscountORM, sort_by)
+        if hasattr(StagingBrandInventoryDiscountORM, sort_by):
+            sort_column = getattr(StagingBrandInventoryDiscountORM, sort_by)
             if order.lower() == "desc":
                 query = query.order_by(desc(sort_column))
             else:
@@ -534,8 +534,8 @@ class SQLAlchemyBrandInventoryDiscountRepository(BrandInventoryDiscountRepositor
         discounts_orm = query.offset(offset).limit(limit).all()
         return [self._orm_to_entity(discount_orm) for discount_orm in discounts_orm]
     
-    def update(self, discount_id: int, discount: BrandInventoryDiscount) -> BrandInventoryDiscount:
-        discount_orm = self.db.query(BrandInventoryDiscountORM).filter(BrandInventoryDiscountORM.id == discount_id).first()
+    def update(self, discount_id: int, discount: StagingBrandInventoryDiscount) -> StagingBrandInventoryDiscount:
+        discount_orm = self.db.query(StagingBrandInventoryDiscountORM).filter(StagingBrandInventoryDiscountORM.id == discount_id).first()
         if not discount_orm:
             raise ValueError(f"재고 할인을 찾을 수 없습니다: {discount_id}")
         discount_orm.inventory_level_threshold = discount.inventory_level_threshold
@@ -550,15 +550,15 @@ class SQLAlchemyBrandInventoryDiscountRepository(BrandInventoryDiscountRepositor
         return self._orm_to_entity(discount_orm)
     
     def delete(self, discount_id: int) -> bool:
-        discount_orm = self.db.query(BrandInventoryDiscountORM).filter(BrandInventoryDiscountORM.id == discount_id).first()
+        discount_orm = self.db.query(StagingBrandInventoryDiscountORM).filter(StagingBrandInventoryDiscountORM.id == discount_id).first()
         if not discount_orm:
             return False
         self.db.delete(discount_orm)
         self.db.commit()
         return True
     
-    def _orm_to_entity(self, discount_orm: BrandInventoryDiscountORM) -> BrandInventoryDiscount:
-        return BrandInventoryDiscount(
+    def _orm_to_entity(self, discount_orm: StagingBrandInventoryDiscountORM) -> StagingBrandInventoryDiscount:
+        return StagingBrandInventoryDiscount(
             id=discount_orm.id,
             discount_policy_id=discount_orm.discount_policy_id,
             inventory_level_threshold=discount_orm.inventory_level_threshold,
@@ -571,14 +571,14 @@ class SQLAlchemyBrandInventoryDiscountRepository(BrandInventoryDiscountRepositor
         )
 
 
-class SQLAlchemyBrandPrePurchaseRepository(BrandPrePurchaseRepository):
+class SQLAlchemyStagingBrandPrePurchaseRepository(StagingBrandPrePurchaseRepository):
     """선구매 할인 Repository 구현"""
     
     def __init__(self, db: Session):
         self.db = db
     
-    def create(self, pre_purchase: BrandPrePurchase) -> BrandPrePurchase:
-        pre_purchase_orm = BrandPrePurchaseORM(
+    def create(self, pre_purchase: StagingBrandPrePurchase) -> StagingBrandPrePurchase:
+        pre_purchase_orm = StagingBrandPrePurchaseORM(
             discount_policy_id=pre_purchase.discount_policy_id,
             event_type=pre_purchase.event_type,
             discount_rate=str(pre_purchase.discount_rate) if pre_purchase.discount_rate else None,
@@ -595,10 +595,10 @@ class SQLAlchemyBrandPrePurchaseRepository(BrandPrePurchaseRepository):
         self.db.refresh(pre_purchase_orm)
         return self._orm_to_entity(pre_purchase_orm)
     
-    def create_bulk(self, pre_purchases: List[BrandPrePurchase]) -> List[BrandPrePurchase]:
+    def create_bulk(self, pre_purchases: List[StagingBrandPrePurchase]) -> List[StagingBrandPrePurchase]:
         pre_purchase_orms = []
         for pre_purchase in pre_purchases:
-            pre_purchase_orm = BrandPrePurchaseORM(
+            pre_purchase_orm = StagingBrandPrePurchaseORM(
                 discount_policy_id=pre_purchase.discount_policy_id,
                 event_type=pre_purchase.event_type,
                 discount_rate=str(pre_purchase.discount_rate) if pre_purchase.discount_rate else None,
@@ -617,29 +617,29 @@ class SQLAlchemyBrandPrePurchaseRepository(BrandPrePurchaseRepository):
             self.db.refresh(pre_purchase_orm)
         return [self._orm_to_entity(pre_purchase_orm) for pre_purchase_orm in pre_purchase_orms]
     
-    def find_by_id(self, pre_purchase_id: int) -> Optional[BrandPrePurchase]:
-        pre_purchase_orm = self.db.query(BrandPrePurchaseORM).filter(BrandPrePurchaseORM.id == pre_purchase_id).first()
+    def find_by_id(self, pre_purchase_id: int) -> Optional[StagingBrandPrePurchase]:
+        pre_purchase_orm = self.db.query(StagingBrandPrePurchaseORM).filter(StagingBrandPrePurchaseORM.id == pre_purchase_id).first()
         return self._orm_to_entity(pre_purchase_orm) if pre_purchase_orm else None
     
-    def find_by_policy_id(self, policy_id: int) -> List[BrandPrePurchase]:
-        pre_purchases_orm = self.db.query(BrandPrePurchaseORM).filter(BrandPrePurchaseORM.discount_policy_id == policy_id).all()
+    def find_by_policy_id(self, policy_id: int) -> List[StagingBrandPrePurchase]:
+        pre_purchases_orm = self.db.query(StagingBrandPrePurchaseORM).filter(StagingBrandPrePurchaseORM.discount_policy_id == policy_id).all()
         return [self._orm_to_entity(pre_purchase_orm) for pre_purchase_orm in pre_purchases_orm]
     
     def find_all(self, policy_id: Optional[int] = None, event_type: Optional[str] = None,
                  is_active: Optional[bool] = None, limit: int = 20, offset: int = 0,
-                 sort_by: str = "created_at", order: str = "desc") -> List[BrandPrePurchase]:
-        query = self.db.query(BrandPrePurchaseORM)
+                 sort_by: str = "created_at", order: str = "desc") -> List[StagingBrandPrePurchase]:
+        query = self.db.query(StagingBrandPrePurchaseORM)
         filters = []
         if policy_id:
-            filters.append(BrandPrePurchaseORM.discount_policy_id == policy_id)
+            filters.append(StagingBrandPrePurchaseORM.discount_policy_id == policy_id)
         if event_type:
-            filters.append(BrandPrePurchaseORM.event_type == event_type)
+            filters.append(StagingBrandPrePurchaseORM.event_type == event_type)
         if is_active is not None:
-            filters.append(BrandPrePurchaseORM.is_active == is_active)
+            filters.append(StagingBrandPrePurchaseORM.is_active == is_active)
         if filters:
             query = query.filter(and_(*filters))
-        if hasattr(BrandPrePurchaseORM, sort_by):
-            sort_column = getattr(BrandPrePurchaseORM, sort_by)
+        if hasattr(StagingBrandPrePurchaseORM, sort_by):
+            sort_column = getattr(StagingBrandPrePurchaseORM, sort_by)
             if order.lower() == "desc":
                 query = query.order_by(desc(sort_column))
             else:
@@ -647,8 +647,8 @@ class SQLAlchemyBrandPrePurchaseRepository(BrandPrePurchaseRepository):
         pre_purchases_orm = query.offset(offset).limit(limit).all()
         return [self._orm_to_entity(pre_purchase_orm) for pre_purchase_orm in pre_purchases_orm]
     
-    def update(self, pre_purchase_id: int, pre_purchase: BrandPrePurchase) -> BrandPrePurchase:
-        pre_purchase_orm = self.db.query(BrandPrePurchaseORM).filter(BrandPrePurchaseORM.id == pre_purchase_id).first()
+    def update(self, pre_purchase_id: int, pre_purchase: StagingBrandPrePurchase) -> StagingBrandPrePurchase:
+        pre_purchase_orm = self.db.query(StagingBrandPrePurchaseORM).filter(StagingBrandPrePurchaseORM.id == pre_purchase_id).first()
         if not pre_purchase_orm:
             raise ValueError(f"선구매 할인을 찾을 수 없습니다: {pre_purchase_id}")
         pre_purchase_orm.event_type = pre_purchase.event_type
@@ -665,15 +665,15 @@ class SQLAlchemyBrandPrePurchaseRepository(BrandPrePurchaseRepository):
         return self._orm_to_entity(pre_purchase_orm)
     
     def delete(self, pre_purchase_id: int) -> bool:
-        pre_purchase_orm = self.db.query(BrandPrePurchaseORM).filter(BrandPrePurchaseORM.id == pre_purchase_id).first()
+        pre_purchase_orm = self.db.query(StagingBrandPrePurchaseORM).filter(StagingBrandPrePurchaseORM.id == pre_purchase_id).first()
         if not pre_purchase_orm:
             return False
         self.db.delete(pre_purchase_orm)
         self.db.commit()
         return True
     
-    def _orm_to_entity(self, pre_purchase_orm: BrandPrePurchaseORM) -> BrandPrePurchase:
-        return BrandPrePurchase(
+    def _orm_to_entity(self, pre_purchase_orm: StagingBrandPrePurchaseORM) -> StagingBrandPrePurchase:
+        return StagingBrandPrePurchase(
             id=pre_purchase_orm.id,
             discount_policy_id=pre_purchase_orm.discount_policy_id,
             event_type=pre_purchase_orm.event_type,

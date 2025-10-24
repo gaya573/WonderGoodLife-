@@ -14,11 +14,11 @@ from app.infrastructure.repositories import (
 )
 # 할인 정책 Repository는 별도 파일에서 import
 from app.infrastructure.discount_repositories import (
-    SQLAlchemyDiscountPolicyRepository,
-    SQLAlchemyBrandCardBenefitRepository,
-    SQLAlchemyBrandPromoRepository,
-    SQLAlchemyBrandInventoryDiscountRepository,
-    SQLAlchemyBrandPrePurchaseRepository
+    SQLAlchemyStagingDiscountPolicyRepository,
+    SQLAlchemyStagingBrandCardBenefitRepository,
+    SQLAlchemyStagingBrandPromoRepository,
+    SQLAlchemyStagingBrandInventoryDiscountRepository,
+    SQLAlchemyStagingBrandPrePurchaseRepository
 )
 from ..infrastructure.excel_parser import PandasExcelParser
 from ..application.use_cases import (
@@ -53,23 +53,23 @@ def get_option_repository(db: Session = Depends(get_db)):
 
 # ===== 할인 정책 Repository Dependencies =====
 def get_discount_policy_repository(db: Session = Depends(get_db)):
-    return SQLAlchemyDiscountPolicyRepository(db)
+    return SQLAlchemyStagingDiscountPolicyRepository(db)
 
 
 def get_card_benefit_repository(db: Session = Depends(get_db)):
-    return SQLAlchemyBrandCardBenefitRepository(db)
+    return SQLAlchemyStagingBrandCardBenefitRepository(db)
 
 
 def get_promo_repository(db: Session = Depends(get_db)):
-    return SQLAlchemyBrandPromoRepository(db)
+    return SQLAlchemyStagingBrandPromoRepository(db)
 
 
 def get_inventory_discount_repository(db: Session = Depends(get_db)):
-    return SQLAlchemyBrandInventoryDiscountRepository(db)
+    return SQLAlchemyStagingBrandInventoryDiscountRepository(db)
 
 
 def get_pre_purchase_repository(db: Session = Depends(get_db)):
-    return SQLAlchemyBrandPrePurchaseRepository(db)
+    return SQLAlchemyStagingBrandPrePurchaseRepository(db)
 
 
 # ===== Service Dependencies =====

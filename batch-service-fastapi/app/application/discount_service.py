@@ -6,18 +6,32 @@ from sqlalchemy.orm import Session
 from datetime import datetime
 
 from ..domain.entities import (
-    DiscountPolicy, BrandCardBenefit, BrandPromo, 
-    BrandInventoryDiscount, BrandPrePurchase, PolicyType
+    StagingDiscountPolicy, StagingBrandCardBenefit, StagingBrandPromo, 
+    StagingBrandInventoryDiscount, StagingBrandPrePurchase, PolicyType
 )
+
+# 타입 별칭
+DiscountPolicy = StagingDiscountPolicy
+BrandCardBenefit = StagingBrandCardBenefit
+BrandPromo = StagingBrandPromo
+BrandInventoryDiscount = StagingBrandInventoryDiscount
+BrandPrePurchase = StagingBrandPrePurchase
 from .ports import (
-    DiscountPolicyRepository, BrandCardBenefitRepository,
-    BrandPromoRepository, BrandInventoryDiscountRepository,
-    BrandPrePurchaseRepository
+    StagingDiscountPolicyRepository, StagingBrandCardBenefitRepository,
+    StagingBrandPromoRepository, StagingBrandInventoryDiscountRepository,
+    StagingBrandPrePurchaseRepository
 )
 from ..infrastructure.orm_models import (
-    DiscountPolicyORM, BrandCardBenefitORM, BrandPromoORM,
-    BrandInventoryDiscountORM, BrandPrePurchaseORM
+    StagingDiscountPolicyORM, StagingBrandCardBenefitORM, StagingBrandPromoORM,
+    StagingBrandInventoryDiscountORM, StagingBrandPrePurchaseORM
 )
+
+# 타입 별칭
+DiscountPolicyORM = StagingDiscountPolicyORM
+BrandCardBenefitORM = StagingBrandCardBenefitORM
+BrandPromoORM = StagingBrandPromoORM
+BrandInventoryDiscountORM = StagingBrandInventoryDiscountORM
+BrandPrePurchaseORM = StagingBrandPrePurchaseORM
 
 
 class DiscountPolicyService:
@@ -25,11 +39,11 @@ class DiscountPolicyService:
     
     def __init__(
         self,
-        policy_repo: DiscountPolicyRepository,
-        card_benefit_repo: BrandCardBenefitRepository,
-        promo_repo: BrandPromoRepository,
-        inventory_discount_repo: BrandInventoryDiscountRepository,
-        pre_purchase_repo: BrandPrePurchaseRepository
+        policy_repo: StagingDiscountPolicyRepository,
+        card_benefit_repo: StagingBrandCardBenefitRepository,
+        promo_repo: StagingBrandPromoRepository,
+        inventory_discount_repo: StagingBrandInventoryDiscountRepository,
+        pre_purchase_repo: StagingBrandPrePurchaseRepository
     ):
         self.policy_repo = policy_repo
         self.card_benefit_repo = card_benefit_repo

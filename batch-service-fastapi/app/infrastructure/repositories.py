@@ -9,9 +9,9 @@ from datetime import datetime
 from ..application.ports import (
     BrandRepository, ModelRepository, TrimRepository,
     ColorRepository, OptionRepository, StagingOptionRepository,
-    DiscountPolicyRepository, BrandCardBenefitRepository,
-    BrandPromoRepository, BrandInventoryDiscountRepository,
-    BrandPrePurchaseRepository
+    StagingDiscountPolicyRepository, StagingBrandCardBenefitRepository,
+    StagingBrandPromoRepository, StagingBrandInventoryDiscountRepository,
+    StagingBrandPrePurchaseRepository
 )
 from ..domain.entities import (
     Brand, Model, Trim, TrimCarColor, OptionTitle, OptionPrice,
@@ -21,8 +21,7 @@ from ..domain.entities import (
     StagingOption, StagingOptionTitle, StagingOptionPrice,  # 새로 추가
     User, UserRole, UserStatus, UserPosition,
     Permission, Role, UserRoleAssignment, RolePermission,
-    Event, EventRegistration, EventType, EventStatus,  # 이벤트 관련
-    DiscountPolicy, BrandCardBenefit, BrandPromo, BrandInventoryDiscount, BrandPrePurchase, PolicyType  # 할인 정책 관련
+    StagingDiscountPolicy, StagingBrandCardBenefit, StagingBrandPromo, StagingBrandInventoryDiscount, StagingBrandPrePurchase, PolicyType  # 할인 정책 관련
 )
 from .orm_models import (
     BrandORM, ModelORM, TrimORM, TrimCarColorORM, VehicleLineORM,  # 새로 추가
@@ -31,8 +30,7 @@ from .orm_models import (
     StagingVersionORM,  # 단순화된 버전 관리
     StagingOptionORM, StagingOptionTitleORM, StagingOptionPriceORM,  # 새로 추가
     UserORM, PermissionORM, RoleORM, UserRoleORM, RolePermissionORM, UserPermissionORM,
-    EventORM, EventRegistrationORM,  # 이벤트 관련
-    DiscountPolicyORM, BrandCardBenefitORM, BrandPromoORM, BrandInventoryDiscountORM, BrandPrePurchaseORM  # 할인 정책 관련
+    StagingDiscountPolicyORM, StagingBrandCardBenefitORM, StagingBrandPromoORM, StagingBrandInventoryDiscountORM, StagingBrandPrePurchaseORM  # 할인 정책 관련
 )
 
 
