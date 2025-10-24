@@ -679,7 +679,7 @@ class EventCreate(BaseModel):
     related_model_id: Optional[int] = None
 
 
-class EventUpdate(BaseModel):
+class DiscountEventUpdate(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
     event_type: Optional[EventType] = None
@@ -692,9 +692,10 @@ class EventUpdate(BaseModel):
     registration_fee: Optional[int] = None
     related_brand_id: Optional[int] = None
     related_model_id: Optional[int] = None
+    version_id: Optional[int] = None
 
 
-class EventResponse(BaseModel):
+class DiscountEventResponse(BaseModel):
     id: int
     title: str
     description: Optional[str] = None
@@ -709,38 +710,91 @@ class EventResponse(BaseModel):
     registration_fee: Optional[int] = None
     related_brand_id: Optional[int] = None
     related_model_id: Optional[int] = None
+    version_id: Optional[int] = None
     created_by: Optional[str] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
     
     @classmethod
-    def from_entity(cls, event) -> 'EventResponse':
+    def from_entity(cls, discount_event) -> 'DiscountEventResponse':
         return cls(
-            id=event.id,
-            title=event.title,
-            description=event.description,
-            event_type=event.event_type,
-            status=event.status,
-            start_date=event.start_date,
-            end_date=event.end_date,
-            location=event.location,
-            address=event.address,
-            max_participants=event.max_participants,
-            current_participants=event.current_participants,
-            registration_fee=event.registration_fee,
-            related_brand_id=event.related_brand_id,
-            related_model_id=event.related_model_id,
-            created_by=event.created_by,
-            created_at=event.created_at,
-            updated_at=event.updated_at
+            id=discount_event.id,
+            title=discount_event.title,
+            description=discount_event.description,
+            event_type=discount_event.event_type,
+            status=discount_event.status,
+            start_date=discount_event.start_date,
+            end_date=discount_event.end_date,
+            location=discount_event.location,
+            address=discount_event.address,
+            max_participants=discount_event.max_participants,
+            current_participants=discount_event.current_participants,
+            registration_fee=discount_event.registration_fee,
+            related_brand_id=discount_event.related_brand_id,
+            related_model_id=discount_event.related_model_id,
+            version_id=discount_event.version_id,
+            created_by=discount_event.created_by,
+            created_at=discount_event.created_at,
+            updated_at=discount_event.updated_at
         )
     
     class Config:
         from_attributes = True
 
 
-class EventListResponse(BaseModel):
-    events: List[EventResponse]
+class DiscountEventListResponse(BaseModel):
+    discount_events: List[DiscountEventResponse]
+    total: int
+    skip: int
+    limit: int
+
+
+# ===== 푸시 대기 관리 스키마 =====
+
+class VersionPushQueueCreate(BaseModel):
+    version_id: int
+    push_discount_policies: bool = True
+    push_discount_events: bool = True
+    created_by: Optional[str] = None
+
+
+class VersionPushQueueResponse(BaseModel):
+    id: int
+    version_id: int
+    status: str
+    push_discount_policies: bool
+    push_discount_events: bool
+    pushed_discount_policies_count: int
+    pushed_discount_events_count: int
+    error_message: Optional[str] = None
+    created_by: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    completed_at: Optional[datetime] = None
+    
+    @classmethod
+    def from_entity(cls, push_queue) -> 'VersionPushQueueResponse':
+        return cls(
+            id=push_queue.id,
+            version_id=push_queue.version_id,
+            status=push_queue.status,
+            push_discount_policies=push_queue.push_discount_policies,
+            push_discount_events=push_queue.push_discount_events,
+            pushed_discount_policies_count=push_queue.pushed_discount_policies_count,
+            pushed_discount_events_count=push_queue.pushed_discount_events_count,
+            error_message=push_queue.error_message,
+            created_by=push_queue.created_by,
+            created_at=push_queue.created_at,
+            updated_at=push_queue.updated_at,
+            completed_at=push_queue.completed_at
+        )
+    
+    class Config:
+        from_attributes = True
+
+
+class VersionPushQueueListResponse(BaseModel):
+    push_queues: List[VersionPushQueueResponse]
     total: int
     skip: int
     limit: int
@@ -800,6 +854,7 @@ OptionTitleTreeResponse.model_rebuild()
 class DiscountPolicyCreate(BaseModel):
     """할인 정책 생성 요청"""
     brand_id: int
+    vehicle_line_id: int
     trim_id: int
     version_id: int
     policy_type: PolicyType
@@ -823,6 +878,7 @@ class DiscountPolicyResponse(BaseModel):
     """할인 정책 응답"""
     id: int
     brand_id: int
+    vehicle_line_id: int
     trim_id: int
     version_id: int
     policy_type: PolicyType

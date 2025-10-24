@@ -12,6 +12,9 @@ import UserManagement from './pages/UserManagement';
 import UserProfile from './pages/UserProfile';
 import PermissionManagement from './pages/PermissionManagement';
 import MainDBStatus from './pages/MainDBStatus';
+import DiscountPolicyManagement from './pages/DiscountPolicyManagement';
+import AddDiscountPolicy from './pages/AddDiscountPolicy';
+import SelectVersionForDiscount from './pages/SelectVersionForDiscount';
 
 function App() {
   return (
@@ -35,6 +38,9 @@ function App() {
           <Route path="staging-brands" element={<StagingBrandList />} />
           <Route path="versions" element={<VersionList />} />
           <Route path="version-data" element={<VersionDataManagementRefactored />} />
+          <Route path="add-discount" element={<SelectVersionForDiscount />} />
+          <Route path="discount-policies/:versionId" element={<DiscountPolicyManagement />} />
+          <Route path="discount-policies/:versionId/add/:policyType" element={<AddDiscountPolicy />} />
           <Route path="user-management" element={<UserManagement />} />
           <Route path="user-profile" element={<UserProfile />} />
           <Route path="permission-management" element={<PermissionManagement />} />

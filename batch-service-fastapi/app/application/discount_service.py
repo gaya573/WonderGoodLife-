@@ -14,6 +14,10 @@ from .ports import (
     BrandPromoRepository, BrandInventoryDiscountRepository,
     BrandPrePurchaseRepository
 )
+from ..infrastructure.orm_models import (
+    DiscountPolicyORM, BrandCardBenefitORM, BrandPromoORM,
+    BrandInventoryDiscountORM, BrandPrePurchaseORM
+)
 
 
 class DiscountPolicyService:
@@ -38,6 +42,7 @@ class DiscountPolicyService:
     async def create_discount_policy(
         self,
         brand_id: int,
+        vehicle_line_id: int,
         trim_id: int,
         version_id: int,
         policy_type: PolicyType,
@@ -51,6 +56,7 @@ class DiscountPolicyService:
         # 도메인 엔티티 생성
         policy = DiscountPolicy(
             brand_id=brand_id,
+            vehicle_line_id=vehicle_line_id,
             trim_id=trim_id,
             version_id=version_id,
             policy_type=policy_type,
@@ -525,8 +531,8 @@ class DiscountPolicyService:
     async def create_pre_purchase(
         self,
         discount_policy_id: int,
-        event_type: str,
         title: str,
+        event_type: Optional[str] = "PRE_PURCHASE_SPECIAL",
         discount_rate: Optional[float] = None,
         discount_amount: Optional[int] = None,
         description: Optional[str] = None,
@@ -535,7 +541,7 @@ class DiscountPolicyService:
         valid_to: Optional[datetime] = None,
         is_active: bool = True
     ) -> BrandPrePurchase:
-        """선구매 할인 생성"""
+        """선구매 할인 생성 (선구매/특가 통합)"""
         # 도메인 엔티티 생성
         pre_purchase = BrandPrePurchase(
             discount_policy_id=discount_policy_id,
@@ -649,6 +655,196 @@ class DiscountPolicyService:
         return self.pre_purchase_repo.delete(pre_purchase_id)
     
     # ===== 통합 조회 메서드 =====
+    
+    async def create_discount_policy_with_details(
+        self,
+        brand_id: int,
+        vehicle_line_id: int,
+        trim_id: int,
+        version_id: int,
+        policy_type: PolicyType,
+        title: str,
+        description: Optional[str] = None,
+        valid_from: Optional[datetime] = None,
+        valid_to: Optional[datetime] = None,
+        is_active: bool = True,
+        # 세부 정보
+        card_partner: Optional[str] = None,
+        cashback_rate: Optional[float] = None,
+        discount_rate: Optional[float] = None,
+        discount_amount: Optional[int] = None,
+        inventory_level_threshold: Optional[int] = None,
+        event_type: Optional[str] = None,
+        pre_purchase_start: Optional[datetime] = None
+    ) -> Dict[str, Any]:
+        """
+        할인 정책과 세부 정보를 트랜잭션으로 함께 생성
+        """
+        # 트랜잭션 시작을 위해 Repository의 db에 직접 접근
+        db = self.policy_repo.db
+        
+        try:
+            # 1. 기본 정책 생성
+            policy = DiscountPolicy(
+                brand_id=brand_id,
+                vehicle_line_id=vehicle_line_id,
+                trim_id=trim_id,
+                version_id=version_id,
+                policy_type=policy_type,
+                title=title,
+                description=description,
+                valid_from=valid_from or datetime.utcnow(),
+                valid_to=valid_to or datetime.utcnow(),
+                is_active=is_active
+            )
+            policy.validate()
+            
+            # ORM 객체 생성 및 추가 (아직 commit 안 함)
+            policy_orm = DiscountPolicyORM(
+                brand_id=policy.brand_id,
+                vehicle_line_id=policy.vehicle_line_id,
+                trim_id=policy.trim_id,
+                version_id=policy.version_id,
+                policy_type=policy.policy_type,
+                title=policy.title,
+                description=policy.description,
+                valid_from=policy.valid_from,
+                valid_to=policy.valid_to,
+                is_active=policy.is_active
+            )
+            db.add(policy_orm)
+            db.flush()  # ID를 얻기 위해 flush만 (commit 아님)
+            
+            # 2. 세부 정보 생성 (policy_type에 따라)
+            if policy_type == PolicyType.CARD_BENEFIT:
+                if not card_partner or cashback_rate is None:
+                    raise ValueError("카드사명과 캐시백 비율은 필수입니다")
+                
+                benefit = BrandCardBenefit(
+                    discount_policy_id=policy_orm.id,
+                    card_partner=card_partner,
+                    cashback_rate=cashback_rate,
+                    title=title,
+                    description=description,
+                    valid_from=valid_from or datetime.utcnow(),
+                    valid_to=valid_to or datetime.utcnow(),
+                    is_active=is_active
+                )
+                benefit.validate()
+                
+                benefit_orm = BrandCardBenefitORM(
+                    discount_policy_id=policy_orm.id,
+                    card_partner=benefit.card_partner,
+                    cashback_rate=str(benefit.cashback_rate),
+                    title=benefit.title,
+                    description=benefit.description,
+                    valid_from=benefit.valid_from,
+                    valid_to=benefit.valid_to,
+                    is_active=benefit.is_active
+                )
+                db.add(benefit_orm)
+                
+            elif policy_type == PolicyType.BRAND_PROMO:
+                if discount_rate is None and discount_amount is None:
+                    raise ValueError("할인율 또는 할인 금액 중 하나는 필수입니다")
+                
+                promo = BrandPromo(
+                    discount_policy_id=policy_orm.id,
+                    discount_rate=discount_rate,
+                    discount_amount=discount_amount,
+                    title=title,
+                    description=description,
+                    valid_from=valid_from or datetime.utcnow(),
+                    valid_to=valid_to or datetime.utcnow(),
+                    is_active=is_active
+                )
+                promo.validate()
+                
+                promo_orm = BrandPromoORM(
+                    discount_policy_id=policy_orm.id,
+                    discount_rate=str(promo.discount_rate) if promo.discount_rate else None,
+                    discount_amount=promo.discount_amount,
+                    title=promo.title,
+                    description=promo.description,
+                    valid_from=promo.valid_from,
+                    valid_to=promo.valid_to,
+                    is_active=promo.is_active
+                )
+                db.add(promo_orm)
+                
+            elif policy_type == PolicyType.INVENTORY:
+                if inventory_level_threshold is None or discount_rate is None:
+                    raise ValueError("재고 기준 수량과 할인율은 필수입니다")
+                
+                inventory = BrandInventoryDiscount(
+                    discount_policy_id=policy_orm.id,
+                    inventory_level_threshold=inventory_level_threshold,
+                    discount_rate=discount_rate,
+                    title=title,
+                    description=description,
+                    valid_from=valid_from or datetime.utcnow(),
+                    valid_to=valid_to or datetime.utcnow(),
+                    is_active=is_active
+                )
+                inventory.validate()
+                
+                inventory_orm = BrandInventoryDiscountORM(
+                    discount_policy_id=policy_orm.id,
+                    inventory_level_threshold=inventory.inventory_level_threshold,
+                    discount_rate=str(inventory.discount_rate),
+                    title=inventory.title,
+                    description=inventory.description,
+                    valid_from=inventory.valid_from,
+                    valid_to=inventory.valid_to,
+                    is_active=inventory.is_active
+                )
+                db.add(inventory_orm)
+                
+            elif policy_type == PolicyType.PRE_PURCHASE:
+                if discount_rate is None and discount_amount is None:
+                    raise ValueError("할인율 또는 할인 금액 중 하나는 필수입니다")
+                
+                pre_purchase = BrandPrePurchase(
+                    discount_policy_id=policy_orm.id,
+                    event_type=event_type or "PRE_PURCHASE",
+                    discount_rate=discount_rate,
+                    discount_amount=discount_amount,
+                    title=title,
+                    description=description,
+                    pre_purchase_start=pre_purchase_start,
+                    valid_from=valid_from or datetime.utcnow(),
+                    valid_to=valid_to or datetime.utcnow(),
+                    is_active=is_active
+                )
+                pre_purchase.validate()
+                
+                pre_purchase_orm = BrandPrePurchaseORM(
+                    discount_policy_id=policy_orm.id,
+                    event_type=pre_purchase.event_type,
+                    discount_rate=str(pre_purchase.discount_rate) if pre_purchase.discount_rate else None,
+                    discount_amount=pre_purchase.discount_amount,
+                    title=pre_purchase.title,
+                    description=pre_purchase.description,
+                    pre_purchase_start=pre_purchase.pre_purchase_start,
+                    valid_from=pre_purchase.valid_from,
+                    valid_to=pre_purchase.valid_to,
+                    is_active=pre_purchase.is_active
+                )
+                db.add(pre_purchase_orm)
+            
+            # 3. 모든 변경사항 commit (트랜잭션 성공)
+            db.commit()
+            db.refresh(policy_orm)
+            
+            return {
+                "policy": self.policy_repo._orm_to_entity(policy_orm),
+                "success": True
+            }
+            
+        except Exception as e:
+            # 에러 발생 시 롤백
+            db.rollback()
+            raise ValueError(f"할인 정책 생성 실패: {str(e)}")
     
     async def get_discount_policy_details(self, policy_id: int) -> Dict[str, Any]:
         """할인 정책 상세 조회 (모든 유형 포함)"""

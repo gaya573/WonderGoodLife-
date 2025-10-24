@@ -525,8 +525,8 @@ class EventStatus(str, Enum):
 
 
 @dataclass
-class Event:
-    """이벤트 도메인 엔티티"""
+class DiscountEvent:
+    """할인정책 이벤트 도메인 엔티티"""
     title: str
     description: Optional[str] = None
     event_type: EventType = EventType.PROMOTION
@@ -548,6 +548,9 @@ class Event:
     # 관련 차량 (선택사항)
     related_brand_id: Optional[int] = None
     related_model_id: Optional[int] = None
+    
+    # 버전 연결
+    version_id: Optional[int] = None
     
     # 생성자 정보
     created_by: Optional[str] = None
@@ -590,9 +593,9 @@ class Event:
 
 
 @dataclass
-class EventRegistration:
-    """이벤트 등록 도메인 엔티티"""
-    event_id: int
+class DiscountEventRegistration:
+    """할인정책 이벤트 등록 도메인 엔티티"""
+    discount_event_id: int
     user_id: int
     registration_date: datetime = field(default_factory=datetime.utcnow)
     
@@ -608,13 +611,56 @@ class EventRegistration:
     
     def validate(self) -> None:
         """등록 데이터 검증"""
-        if not self.event_id:
-            raise ValueError("이벤트 ID는 필수입니다")
+        if not self.discount_event_id:
+            raise ValueError("할인정책 이벤트 ID는 필수입니다")
         if not self.user_id:
             raise ValueError("사용자 ID는 필수입니다")
 
 
 # 매핑 테이블 제거 - 직접 참조로 단순화
+
+
+# ===== 푸시 대기 관리 엔티티 =====
+
+@dataclass
+class VersionPushQueue:
+    """버전 푸시 대기 도메인 엔티티"""
+    version_id: int
+    status: str = "PENDING"  # PENDING, PROCESSING, COMPLETED, FAILED
+    
+    # 푸시할 데이터 타입
+    push_discount_policies: bool = True
+    push_discount_events: bool = True
+    
+    # 푸시 결과
+    pushed_discount_policies_count: int = 0
+    pushed_discount_events_count: int = 0
+    
+    # 에러 정보
+    error_message: Optional[str] = None
+    
+    # 생성자 정보
+    created_by: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    completed_at: Optional[datetime] = None
+    
+    id: Optional[int] = None
+    
+    def validate(self) -> None:
+        """푸시 대기 데이터 검증"""
+        if not self.version_id:
+            raise ValueError("버전 ID는 필수입니다")
+        if self.status not in ["PENDING", "PROCESSING", "COMPLETED", "FAILED"]:
+            raise ValueError("유효하지 않은 상태입니다")
+    
+    def can_process(self) -> bool:
+        """처리 가능한 상태인지 확인"""
+        return self.status == "PENDING"
+    
+    def is_completed(self) -> bool:
+        """완료 상태인지 확인"""
+        return self.status == "COMPLETED"
 
 
 # ===== 할인 정책 엔티티 =====
@@ -635,8 +681,9 @@ class EventTypeForPrePurchase(str, Enum):
 
 @dataclass
 class DiscountPolicy:
-    """할인 정책 허브 엔티티 - 브랜드, 트림, 버전 단위"""
+    """할인 정책 허브 엔티티 - 브랜드, Vehicle Line, 트림, 버전 단위"""
     brand_id: int
+    vehicle_line_id: int
     trim_id: int
     version_id: int
     policy_type: PolicyType
@@ -651,6 +698,8 @@ class DiscountPolicy:
         """정책 데이터 검증"""
         if not self.brand_id:
             raise ValueError("브랜드 ID는 필수입니다")
+        if not self.vehicle_line_id:
+            raise ValueError("Vehicle Line ID는 필수입니다")
         if not self.trim_id:
             raise ValueError("트림 ID는 필수입니다")
         if not self.version_id:
@@ -710,7 +759,8 @@ class BrandPromo:
     
     def validate(self) -> None:
         """프로모션 데이터 검증"""
-        if not self.discount_rate and not self.discount_amount:
+        # 할인율과 할인 금액이 모두 None이면 안 됨 (하지만 0은 허용)
+        if self.discount_rate is None and self.discount_amount is None:
             raise ValueError("할인율 또는 할인 금액 중 하나는 필수입니다")
         if self.discount_rate is not None and (self.discount_rate < 0 or self.discount_rate > 100):
             raise ValueError("할인율은 0-100 사이여야 합니다")
@@ -772,7 +822,8 @@ class BrandPrePurchase:
     
     def validate(self) -> None:
         """선구매 할인 데이터 검증"""
-        if not self.discount_rate and not self.discount_amount:
+        # 할인율과 할인 금액이 모두 None이면 안 됨 (하지만 0은 허용)
+        if self.discount_rate is None and self.discount_amount is None:
             raise ValueError("할인율 또는 할인 금액 중 하나는 필수입니다")
         if self.discount_rate is not None and (self.discount_rate < 0 or self.discount_rate > 100):
             raise ValueError("할인율은 0-100 사이여야 합니다")

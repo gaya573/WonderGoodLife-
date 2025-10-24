@@ -31,6 +31,7 @@ class SQLAlchemyDiscountPolicyRepository(DiscountPolicyRepository):
         """할인 정책 생성"""
         policy_orm = DiscountPolicyORM(
             brand_id=policy.brand_id,
+            vehicle_line_id=policy.vehicle_line_id,
             trim_id=policy.trim_id,
             version_id=policy.version_id,
             policy_type=policy.policy_type,
@@ -188,6 +189,7 @@ class SQLAlchemyDiscountPolicyRepository(DiscountPolicyRepository):
         return DiscountPolicy(
             id=policy_orm.id,
             brand_id=policy_orm.brand_id,
+            vehicle_line_id=policy_orm.vehicle_line_id,
             trim_id=policy_orm.trim_id,
             version_id=policy_orm.version_id,
             policy_type=policy_orm.policy_type,

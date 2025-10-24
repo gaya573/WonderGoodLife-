@@ -671,8 +671,268 @@ def get_brands_summary(
         raise HTTPException(status_code=500, detail=f"브랜드 목록 조회 실패: {str(e)}")
 
 
+# 간단한 브랜드 목록 API (할인 정책용)
+@router.get("/{version_id}/brands-list")
+def get_brands_list(
+    version_id: int,
+    db: Session = Depends(get_db)
+):
+    """버전의 브랜드 ID와 이름만 조회 (할인 정책 선택용)"""
+    try:
+        from app.infrastructure.orm_models import StagingBrandORM, StagingVersionORM
+        
+        # 버전 존재 확인
+        version = db.query(StagingVersionORM).filter(StagingVersionORM.id == version_id).first()
+        
+        if not version:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="버전을 찾을 수 없습니다"
+            )
+        
+        # 해당 버전의 모든 브랜드 조회
+        brands = db.query(StagingBrandORM).filter(
+            StagingBrandORM.version_id == version_id
+        ).all()
+        
+        return {
+            "version_id": version_id,
+            "version_name": version.version_name,
+            "brands": [
+                {"id": b.id, "name": b.name, "country": b.country}
+                for b in brands
+            ],
+            "total": len(brands)
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"브랜드 목록 조회 실패: {str(e)}")
 
 
+# 브랜드별 Vehicle Line 목록 API (할인 정책용)
+@router.get("/{version_id}/brands/{brand_id}/vehicle-lines")
+def get_brand_vehicle_lines(
+    version_id: int,
+    brand_id: int,
+    db: Session = Depends(get_db)
+):
+    """특정 브랜드의 모든 Vehicle Line 조회 (할인 정책 선택용)"""
+    try:
+        from app.infrastructure.orm_models import (
+            StagingBrandORM, StagingVersionORM,
+            StagingVehicleLineORM
+        )
+        
+        # 버전 존재 확인
+        version = db.query(StagingVersionORM).filter(StagingVersionORM.id == version_id).first()
+        if not version:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="버전을 찾을 수 없습니다"
+            )
+        
+        # 브랜드 확인
+        brand = db.query(StagingBrandORM).filter(
+            StagingBrandORM.id == brand_id,
+            StagingBrandORM.version_id == version_id
+        ).first()
+        
+        if not brand:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="브랜드를 찾을 수 없습니다"
+            )
+        
+        # 해당 브랜드의 모든 Vehicle Line 조회
+        vehicle_lines = db.query(StagingVehicleLineORM).filter(
+            StagingVehicleLineORM.brand_id == brand_id
+        ).all()
+        
+        return {
+            "version_id": version_id,
+            "brand_id": brand_id,
+            "brand_name": brand.name,
+            "vehicle_lines": [
+                {"id": vl.id, "name": vl.name, "description": vl.description}
+                for vl in vehicle_lines
+            ],
+            "total": len(vehicle_lines)
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Vehicle Line 목록 조회 실패: {str(e)}")
+
+
+# 브랜드별 트림 목록 API (할인 정책용)
+@router.get("/{version_id}/brands/{brand_id}/trims")
+def get_brand_trims(
+    version_id: int,
+    brand_id: int,
+    db: Session = Depends(get_db)
+):
+    """특정 브랜드의 모든 트림 조회 (할인 정책 선택용)"""
+    try:
+        from app.infrastructure.orm_models import (
+            StagingBrandORM, StagingVersionORM,
+            StagingVehicleLineORM, StagingModelORM, StagingTrimORM
+        )
+        
+        # 버전 존재 확인
+        version = db.query(StagingVersionORM).filter(StagingVersionORM.id == version_id).first()
+        if not version:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="버전을 찾을 수 없습니다"
+            )
+        
+        # 브랜드 확인
+        brand = db.query(StagingBrandORM).filter(
+            StagingBrandORM.id == brand_id,
+            StagingBrandORM.version_id == version_id
+        ).first()
+        
+        if not brand:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="브랜드를 찾을 수 없습니다"
+            )
+        
+        # 해당 브랜드의 모든 트림 조회 (JOIN with model)
+        trims_data = db.query(StagingTrimORM, StagingModelORM).join(
+            StagingModelORM, StagingTrimORM.model_id == StagingModelORM.id
+        ).join(
+            StagingVehicleLineORM, StagingModelORM.vehicle_line_id == StagingVehicleLineORM.id
+        ).join(
+            StagingBrandORM, StagingVehicleLineORM.brand_id == StagingBrandORM.id
+        ).filter(
+            StagingBrandORM.version_id == version_id,
+            StagingBrandORM.id == brand_id
+        ).all()
+        
+        # 트림 데이터 구성
+        trims_result = []
+        for trim, model in trims_data:
+            trims_result.append({
+                "id": trim.id,
+                "name": trim.name,
+                "model_name": model.name if model else None,
+                "car_type": trim.car_type.value if hasattr(trim.car_type, 'value') else str(trim.car_type),
+                "fuel_name": trim.fuel_name,
+                "base_price": trim.base_price
+            })
+        
+        return {
+            "version_id": version_id,
+            "version_name": version.version_name,
+            "brand": {
+                "id": brand.id,
+                "name": brand.name,
+                "country": brand.country
+            },
+            "trims": trims_result,
+            "total": len(trims_result)
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        import traceback
+        error_details = traceback.format_exc()
+        print(f"[ERROR] 트림 목록 조회 실패: {str(e)}")
+        print(f"[ERROR] Traceback: {error_details}")
+        raise HTTPException(status_code=500, detail=f"트림 목록 조회 실패: {str(e)}")
+
+
+# Vehicle Line별 트림 목록 API (할인 정책용)
+@router.get("/{version_id}/brands/{brand_id}/vehicle-lines/{vehicle_line_id}/trims")
+def get_vehicle_line_trims(
+    version_id: int,
+    brand_id: int,
+    vehicle_line_id: int,
+    db: Session = Depends(get_db)
+):
+    """특정 Vehicle Line의 모든 트림 조회 (할인 정책 선택용)"""
+    try:
+        from app.infrastructure.orm_models import (
+            StagingBrandORM, StagingVersionORM,
+            StagingVehicleLineORM, StagingModelORM, StagingTrimORM
+        )
+        
+        # 버전 존재 확인
+        version = db.query(StagingVersionORM).filter(StagingVersionORM.id == version_id).first()
+        if not version:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="버전을 찾을 수 없습니다"
+            )
+        
+        # 브랜드 확인
+        brand = db.query(StagingBrandORM).filter(
+            StagingBrandORM.id == brand_id,
+            StagingBrandORM.version_id == version_id
+        ).first()
+        
+        if not brand:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="브랜드를 찾을 수 없습니다"
+            )
+        
+        # Vehicle Line 확인
+        vehicle_line = db.query(StagingVehicleLineORM).filter(
+            StagingVehicleLineORM.id == vehicle_line_id,
+            StagingVehicleLineORM.brand_id == brand_id
+        ).first()
+        
+        if not vehicle_line:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Vehicle Line을 찾을 수 없습니다"
+            )
+        
+        # 해당 Vehicle Line의 모든 트림 조회 (JOIN with model)
+        trims_data = db.query(StagingTrimORM, StagingModelORM).join(
+            StagingModelORM, StagingTrimORM.model_id == StagingModelORM.id
+        ).filter(
+            StagingModelORM.vehicle_line_id == vehicle_line_id
+        ).all()
+        
+        # 트림 데이터 구성
+        trims_result = []
+        for trim, model in trims_data:
+            trims_result.append({
+                "id": trim.id,
+                "name": trim.name,
+                "model_name": model.name if model else None,
+                "car_type": trim.car_type.value if hasattr(trim.car_type, 'value') else str(trim.car_type),
+                "fuel_name": trim.fuel_name,
+                "base_price": trim.base_price
+            })
+        
+        return {
+            "version_id": version_id,
+            "version_name": version.version_name,
+            "brand": {
+                "id": brand.id,
+                "name": brand.name,
+                "country": brand.country
+            },
+            "vehicle_line": {
+                "id": vehicle_line.id,
+                "name": vehicle_line.name
+            },
+            "trims": trims_result,
+            "total": len(trims_result)
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        import traceback
+        error_details = traceback.format_exc()
+        print(f"[ERROR] Vehicle Line 트림 목록 조회 실패: {str(e)}")
+        print(f"[ERROR] Traceback: {error_details}")
+        raise HTTPException(status_code=500, detail=f"Vehicle Line 트림 목록 조회 실패: {str(e)}")
 
 
 @router.get("/{version_id}/filtered-data")

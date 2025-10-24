@@ -204,6 +204,26 @@ export const versionAPI = {
     return batchApi.get(url);
   },
 
+  // 간단한 브랜드 목록 조회 (할인 정책용)
+  getBrandsList: (versionId) => {
+    return batchApi.get(`/versions/${versionId}/brands-list`);
+  },
+
+  // 브랜드별 트림 목록 조회 (할인 정책용)
+  getBrandTrims: (versionId, brandId) => {
+    return batchApi.get(`/versions/${versionId}/brands/${brandId}/trims`);
+  },
+
+  // 브랜드별 Vehicle Line 목록 조회 (할인 정책용)
+  getBrandVehicleLines: (versionId, brandId) => {
+    return batchApi.get(`/versions/${versionId}/brands/${brandId}/vehicle-lines`);
+  },
+
+  // Vehicle Line별 트림 목록 조회 (할인 정책용)
+  getVehicleLineTrims: (versionId, brandId, vehicleLineId) => {
+    return batchApi.get(`/versions/${versionId}/brands/${brandId}/vehicle-lines/${vehicleLineId}/trims`);
+  },
+
   // 특정 트림의 통합된 옵션 목록 조회
   getTrimOptions: (versionId, trimId, params = {}) => {
     const queryParams = new URLSearchParams();

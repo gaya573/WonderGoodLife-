@@ -27,6 +27,7 @@ function Layout() {
     const allMenuItems = [
       { path: '/', label: '대시보드', icon: '📊', requiredRole: null }, // 모든 사용자 접근 가능
       { path: '/versions', label: '버전 관리', icon: '📋', requiredRole: null }, // 모든 사용자 접근 가능
+      { path: '/add-discount', label: '할인 정책 추가', icon: '💰', requiredRole: null }, // 모든 사용자 접근 가능
       { path: '/user-management', label: '사용자 관리', icon: '👥', requiredRole: 'ADMIN' }, // ADMIN만 접근 가능
       { path: '/permission-management', label: '권한 관리', icon: '🔑', requiredRole: 'ADMIN' }, // ADMIN만 접근 가능
     ];
