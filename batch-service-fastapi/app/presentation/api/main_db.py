@@ -904,63 +904,78 @@ def get_main_discount_policies(
             
             if policy_type_str == 'CARD_BENEFIT':
                 card_benefits = db.query(BrandCardBenefitORM).filter(
-                    BrandCardBenefitORM.policy_id == policy.id
+                    BrandCardBenefitORM.discount_policy_id == policy.id
                 ).all()
                 policy_details = {
                     "card_benefits": [
                         {
                             "id": cb.id,
-                            "card_name": cb.card_name,
-                            "discount_type": cb.discount_type,
-                            "discount_value": cb.discount_value,
-                            "min_amount": cb.min_amount,
-                            "max_discount": cb.max_discount
+                            "card_partner": cb.card_partner,
+                            "cashback_rate": cb.cashback_rate,
+                            "title": cb.title,
+                            "description": cb.description,
+                            "valid_from": cb.valid_from.isoformat() if cb.valid_from else None,
+                            "valid_to": cb.valid_to.isoformat() if cb.valid_to else None,
+                            "is_active": cb.is_active
                         }
                         for cb in card_benefits
                     ]
                 }
             elif policy_type_str == 'BRAND_PROMO':
                 promos = db.query(BrandPromoORM).filter(
-                    BrandPromoORM.policy_id == policy.id
+                    BrandPromoORM.discount_policy_id == policy.id
                 ).all()
                 policy_details = {
                     "promos": [
                         {
                             "id": p.id,
-                            "promo_name": p.promo_name,
-                            "discount_type": p.discount_type,
-                            "discount_value": p.discount_value,
-                            "promo_code": p.promo_code
+                            "discount_rate": p.discount_rate,
+                            "discount_amount": p.discount_amount,
+                            "title": p.title,
+                            "description": p.description,
+                            "valid_from": p.valid_from.isoformat() if p.valid_from else None,
+                            "valid_to": p.valid_to.isoformat() if p.valid_to else None,
+                            "is_active": p.is_active
                         }
                         for p in promos
                     ]
                 }
             elif policy_type_str == 'INVENTORY':
                 inventory_discounts = db.query(BrandInventoryDiscountORM).filter(
-                    BrandInventoryDiscountORM.policy_id == policy.id
+                    BrandInventoryDiscountORM.discount_policy_id == policy.id
                 ).all()
                 policy_details = {
                     "inventory_discounts": [
                         {
                             "id": inv.id,
-                            "discount_type": inv.discount_type,
-                            "discount_value": inv.discount_value,
-                            "min_stock": inv.min_stock
+                            "inventory_level_threshold": inv.inventory_level_threshold,
+                            "discount_rate": inv.discount_rate,
+                            "title": inv.title,
+                            "description": inv.description,
+                            "valid_from": inv.valid_from.isoformat() if inv.valid_from else None,
+                            "valid_to": inv.valid_to.isoformat() if inv.valid_to else None,
+                            "is_active": inv.is_active
                         }
                         for inv in inventory_discounts
                     ]
                 }
             elif policy_type_str == 'PRE_PURCHASE':
                 pre_purchases = db.query(BrandPrePurchaseORM).filter(
-                    BrandPrePurchaseORM.policy_id == policy.id
+                    BrandPrePurchaseORM.discount_policy_id == policy.id
                 ).all()
                 policy_details = {
                     "pre_purchases": [
                         {
                             "id": pp.id,
-                            "pre_purchase_type": pp.pre_purchase_type,
-                            "discount_value": pp.discount_value,
-                            "min_down_payment": pp.min_down_payment
+                            "event_type": pp.event_type.value if hasattr(pp.event_type, 'value') else str(pp.event_type),
+                            "discount_rate": pp.discount_rate,
+                            "discount_amount": pp.discount_amount,
+                            "title": pp.title,
+                            "description": pp.description,
+                            "pre_purchase_start": pp.pre_purchase_start.isoformat() if pp.pre_purchase_start else None,
+                            "valid_from": pp.valid_from.isoformat() if pp.valid_from else None,
+                            "valid_to": pp.valid_to.isoformat() if pp.valid_to else None,
+                            "is_active": pp.is_active
                         }
                         for pp in pre_purchases
                     ]
