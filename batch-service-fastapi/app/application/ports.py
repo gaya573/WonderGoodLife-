@@ -4,7 +4,7 @@ Ports - 인터페이스 정의 (추상화)
 """
 from abc import ABC, abstractmethod
 from typing import List, Optional, Dict
-from ..domain.entities import Brand, Model, Trim, TrimCarColor, OptionTitle, OptionPrice, StagingOption
+from ..domain.entities import Brand, Model, Trim, TrimCarColor, OptionTitle, OptionPrice, StagingOption, DiscountPolicy, BrandCardBenefit, BrandPromo, BrandInventoryDiscount, BrandPrePurchase, PolicyType
 
 
 # ===== Repository Ports =====
@@ -167,5 +167,183 @@ class ExcelParser(ABC):
             ...
         }
         """
+        pass
+
+
+# ===== 할인 정책 Repository Ports =====
+class DiscountPolicyRepository(ABC):
+    """할인 정책 저장소 인터페이스"""
+    
+    @abstractmethod
+    def create(self, policy: DiscountPolicy) -> DiscountPolicy:
+        pass
+    
+    @abstractmethod
+    def find_by_id(self, policy_id: int) -> Optional[DiscountPolicy]:
+        pass
+    
+    @abstractmethod
+    def find_by_brand_trim_version(self, brand_id: int, trim_id: int, version_id: int) -> List[DiscountPolicy]:
+        pass
+    
+    @abstractmethod
+    def find_by_version(self, version_id: int) -> List[DiscountPolicy]:
+        pass
+    
+    @abstractmethod
+    def find_all(self, brand_id: Optional[int] = None, trim_id: Optional[int] = None, 
+                 version_id: Optional[int] = None, policy_type: Optional[PolicyType] = None,
+                 is_active: Optional[bool] = None, limit: int = 20, offset: int = 0,
+                 sort_by: str = "created_at", order: str = "desc") -> List[DiscountPolicy]:
+        pass
+    
+    @abstractmethod
+    def count(self, brand_id: Optional[int] = None, trim_id: Optional[int] = None,
+              version_id: Optional[int] = None, policy_type: Optional[PolicyType] = None,
+              is_active: Optional[bool] = None) -> int:
+        pass
+    
+    @abstractmethod
+    def update(self, policy_id: int, policy: DiscountPolicy) -> DiscountPolicy:
+        pass
+    
+    @abstractmethod
+    def delete(self, policy_id: int) -> bool:
+        pass
+
+
+class BrandCardBenefitRepository(ABC):
+    """카드사 제휴 저장소 인터페이스"""
+    
+    @abstractmethod
+    def create(self, benefit: BrandCardBenefit) -> BrandCardBenefit:
+        pass
+    
+    @abstractmethod
+    def create_bulk(self, benefits: List[BrandCardBenefit]) -> List[BrandCardBenefit]:
+        pass
+    
+    @abstractmethod
+    def find_by_id(self, benefit_id: int) -> Optional[BrandCardBenefit]:
+        pass
+    
+    @abstractmethod
+    def find_by_policy_id(self, policy_id: int) -> List[BrandCardBenefit]:
+        pass
+    
+    @abstractmethod
+    def find_all(self, policy_id: Optional[int] = None, card_partner: Optional[str] = None,
+                 is_active: Optional[bool] = None, limit: int = 20, offset: int = 0,
+                 sort_by: str = "created_at", order: str = "desc") -> List[BrandCardBenefit]:
+        pass
+    
+    @abstractmethod
+    def update(self, benefit_id: int, benefit: BrandCardBenefit) -> BrandCardBenefit:
+        pass
+    
+    @abstractmethod
+    def delete(self, benefit_id: int) -> bool:
+        pass
+
+
+class BrandPromoRepository(ABC):
+    """브랜드 프로모션 저장소 인터페이스"""
+    
+    @abstractmethod
+    def create(self, promo: BrandPromo) -> BrandPromo:
+        pass
+    
+    @abstractmethod
+    def create_bulk(self, promos: List[BrandPromo]) -> List[BrandPromo]:
+        pass
+    
+    @abstractmethod
+    def find_by_id(self, promo_id: int) -> Optional[BrandPromo]:
+        pass
+    
+    @abstractmethod
+    def find_by_policy_id(self, policy_id: int) -> List[BrandPromo]:
+        pass
+    
+    @abstractmethod
+    def find_all(self, policy_id: Optional[int] = None, is_active: Optional[bool] = None,
+                 limit: int = 20, offset: int = 0, sort_by: str = "created_at",
+                 order: str = "desc") -> List[BrandPromo]:
+        pass
+    
+    @abstractmethod
+    def update(self, promo_id: int, promo: BrandPromo) -> BrandPromo:
+        pass
+    
+    @abstractmethod
+    def delete(self, promo_id: int) -> bool:
+        pass
+
+
+class BrandInventoryDiscountRepository(ABC):
+    """재고 할인 저장소 인터페이스"""
+    
+    @abstractmethod
+    def create(self, discount: BrandInventoryDiscount) -> BrandInventoryDiscount:
+        pass
+    
+    @abstractmethod
+    def create_bulk(self, discounts: List[BrandInventoryDiscount]) -> List[BrandInventoryDiscount]:
+        pass
+    
+    @abstractmethod
+    def find_by_id(self, discount_id: int) -> Optional[BrandInventoryDiscount]:
+        pass
+    
+    @abstractmethod
+    def find_by_policy_id(self, policy_id: int) -> List[BrandInventoryDiscount]:
+        pass
+    
+    @abstractmethod
+    def find_all(self, policy_id: Optional[int] = None, is_active: Optional[bool] = None,
+                 limit: int = 20, offset: int = 0, sort_by: str = "created_at",
+                 order: str = "desc") -> List[BrandInventoryDiscount]:
+        pass
+    
+    @abstractmethod
+    def update(self, discount_id: int, discount: BrandInventoryDiscount) -> BrandInventoryDiscount:
+        pass
+    
+    @abstractmethod
+    def delete(self, discount_id: int) -> bool:
+        pass
+
+
+class BrandPrePurchaseRepository(ABC):
+    """선구매 할인 저장소 인터페이스"""
+    
+    @abstractmethod
+    def create(self, pre_purchase: BrandPrePurchase) -> BrandPrePurchase:
+        pass
+    
+    @abstractmethod
+    def create_bulk(self, pre_purchases: List[BrandPrePurchase]) -> List[BrandPrePurchase]:
+        pass
+    
+    @abstractmethod
+    def find_by_id(self, pre_purchase_id: int) -> Optional[BrandPrePurchase]:
+        pass
+    
+    @abstractmethod
+    def find_by_policy_id(self, policy_id: int) -> List[BrandPrePurchase]:
+        pass
+    
+    @abstractmethod
+    def find_all(self, policy_id: Optional[int] = None, event_type: Optional[str] = None,
+                 is_active: Optional[bool] = None, limit: int = 20, offset: int = 0,
+                 sort_by: str = "created_at", order: str = "desc") -> List[BrandPrePurchase]:
+        pass
+    
+    @abstractmethod
+    def update(self, pre_purchase_id: int, pre_purchase: BrandPrePurchase) -> BrandPrePurchase:
+        pass
+    
+    @abstractmethod
+    def delete(self, pre_purchase_id: int) -> bool:
         pass
 

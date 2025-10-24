@@ -2,11 +2,16 @@
 Repository 구현체 - SQLAlchemy를 사용한 데이터 영속성
 새로운 테이블 구조에 맞게 재작성
 """
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from sqlalchemy.orm import Session
+from sqlalchemy import and_, or_, desc, asc
+from datetime import datetime
 from ..application.ports import (
     BrandRepository, ModelRepository, TrimRepository,
-    ColorRepository, OptionRepository, StagingOptionRepository
+    ColorRepository, OptionRepository, StagingOptionRepository,
+    DiscountPolicyRepository, BrandCardBenefitRepository,
+    BrandPromoRepository, BrandInventoryDiscountRepository,
+    BrandPrePurchaseRepository
 )
 from ..domain.entities import (
     Brand, Model, Trim, TrimCarColor, OptionTitle, OptionPrice,
@@ -16,7 +21,8 @@ from ..domain.entities import (
     StagingOption, StagingOptionTitle, StagingOptionPrice,  # 새로 추가
     User, UserRole, UserStatus, UserPosition,
     Permission, Role, UserRoleAssignment, RolePermission,
-    Event, EventRegistration, EventType, EventStatus  # 이벤트 관련
+    Event, EventRegistration, EventType, EventStatus,  # 이벤트 관련
+    DiscountPolicy, BrandCardBenefit, BrandPromo, BrandInventoryDiscount, BrandPrePurchase, PolicyType  # 할인 정책 관련
 )
 from .orm_models import (
     BrandORM, ModelORM, TrimORM, TrimCarColorORM, VehicleLineORM,  # 새로 추가
@@ -25,7 +31,8 @@ from .orm_models import (
     StagingVersionORM,  # 단순화된 버전 관리
     StagingOptionORM, StagingOptionTitleORM, StagingOptionPriceORM,  # 새로 추가
     UserORM, PermissionORM, RoleORM, UserRoleORM, RolePermissionORM, UserPermissionORM,
-    EventORM, EventRegistrationORM  # 이벤트 관련
+    EventORM, EventRegistrationORM,  # 이벤트 관련
+    DiscountPolicyORM, BrandCardBenefitORM, BrandPromoORM, BrandInventoryDiscountORM, BrandPrePurchaseORM  # 할인 정책 관련
 )
 
 

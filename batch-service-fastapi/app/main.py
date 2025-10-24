@@ -17,6 +17,7 @@ from .presentation.api.staging.options import router as staging_options_router
 from .presentation.api.auth import auth, users, permissions
 from .presentation.api.event import events
 from .presentation.api.main_db import router as main_db_router
+from .presentation.api.discount import router as discount_router
 from .config import settings
 
 # 데이터베이스 테이블 생성
@@ -53,6 +54,7 @@ app.include_router(versions.router)  # ✅ 간단한 버전 관리 API
 app.include_router(events.router)  # ✅ 이벤트 관리 API
 app.include_router(simple_search.router)  # ✅ 간단한 검색 API
 app.include_router(main_db_router)  # ✅ 메인 DB 현황 API
+app.include_router(discount_router)  # ✅ 할인 정책 API
 
 # Staging CRUD API 라우터들
 app.include_router(staging_brands_router)  # ✅ Staging Brands CRUD API

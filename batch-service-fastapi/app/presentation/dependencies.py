@@ -12,6 +12,14 @@ from app.infrastructure.repositories import (
     SQLAlchemyColorRepository,
     SQLAlchemyOptionRepository
 )
+# 할인 정책 Repository는 별도 파일에서 import
+from app.infrastructure.discount_repositories import (
+    SQLAlchemyDiscountPolicyRepository,
+    SQLAlchemyBrandCardBenefitRepository,
+    SQLAlchemyBrandPromoRepository,
+    SQLAlchemyBrandInventoryDiscountRepository,
+    SQLAlchemyBrandPrePurchaseRepository
+)
 from ..infrastructure.excel_parser import PandasExcelParser
 from ..application.use_cases import (
     BrandService,
@@ -19,6 +27,7 @@ from ..application.use_cases import (
     TrimService,
     ExcelImportService
 )
+from ..application.discount_service import DiscountPolicyService
 
 
 # ===== Repository Dependencies =====
@@ -40,6 +49,27 @@ def get_color_repository(db: Session = Depends(get_db)):
 
 def get_option_repository(db: Session = Depends(get_db)):
     return SQLAlchemyOptionRepository(db)
+
+
+# ===== 할인 정책 Repository Dependencies =====
+def get_discount_policy_repository(db: Session = Depends(get_db)):
+    return SQLAlchemyDiscountPolicyRepository(db)
+
+
+def get_card_benefit_repository(db: Session = Depends(get_db)):
+    return SQLAlchemyBrandCardBenefitRepository(db)
+
+
+def get_promo_repository(db: Session = Depends(get_db)):
+    return SQLAlchemyBrandPromoRepository(db)
+
+
+def get_inventory_discount_repository(db: Session = Depends(get_db)):
+    return SQLAlchemyBrandInventoryDiscountRepository(db)
+
+
+def get_pre_purchase_repository(db: Session = Depends(get_db)):
+    return SQLAlchemyBrandPrePurchaseRepository(db)
 
 
 # ===== Service Dependencies =====
@@ -80,6 +110,22 @@ def get_excel_import_service(
         staging_brand_repo=staging_brand_repo,
         staging_model_repo=staging_model_repo,
         staging_trim_repo=staging_trim_repo
+    )
+
+
+def get_discount_policy_service(
+    policy_repo=Depends(get_discount_policy_repository),
+    card_benefit_repo=Depends(get_card_benefit_repository),
+    promo_repo=Depends(get_promo_repository),
+    inventory_discount_repo=Depends(get_inventory_discount_repository),
+    pre_purchase_repo=Depends(get_pre_purchase_repository)
+):
+    return DiscountPolicyService(
+        policy_repo=policy_repo,
+        card_benefit_repo=card_benefit_repo,
+        promo_repo=promo_repo,
+        inventory_discount_repo=inventory_discount_repo,
+        pre_purchase_repo=pre_purchase_repo
     )
 
 

@@ -5,7 +5,7 @@ API Request/Response Schemas - Pydantic
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
-from ..domain.entities import CarType, JobStatus, JobType, ApprovalStatus, VersionStatus, EventType, EventStatus
+from ..domain.entities import CarType, JobStatus, JobType, ApprovalStatus, VersionStatus, EventType, EventStatus, PolicyType, EventTypeForPrePurchase
 
 
 # ===== Brand Schemas =====
@@ -792,3 +792,330 @@ VehicleLineTreeResponse.model_rebuild()
 ModelTreeResponse.model_rebuild()
 TrimTreeResponse.model_rebuild()
 OptionTitleTreeResponse.model_rebuild()
+
+
+# ===== 할인 정책 스키마 =====
+
+# 기본 할인 정책 스키마
+class DiscountPolicyCreate(BaseModel):
+    """할인 정책 생성 요청"""
+    brand_id: int
+    trim_id: int
+    version_id: int
+    policy_type: PolicyType
+    title: str
+    description: Optional[str] = None
+    valid_from: Optional[datetime] = None
+    valid_to: Optional[datetime] = None
+    is_active: bool = True
+
+
+class DiscountPolicyUpdate(BaseModel):
+    """할인 정책 수정 요청"""
+    title: Optional[str] = None
+    description: Optional[str] = None
+    valid_from: Optional[datetime] = None
+    valid_to: Optional[datetime] = None
+    is_active: Optional[bool] = None
+
+
+class DiscountPolicyResponse(BaseModel):
+    """할인 정책 응답"""
+    id: int
+    brand_id: int
+    trim_id: int
+    version_id: int
+    policy_type: PolicyType
+    title: str
+    description: Optional[str] = None
+    valid_from: datetime
+    valid_to: datetime
+    is_active: bool
+    
+    class Config:
+        from_attributes = True
+
+
+class DiscountPolicyListResponse(BaseModel):
+    """할인 정책 목록 응답"""
+    items: List[DiscountPolicyResponse]
+    pagination: dict
+
+
+# 카드사 제휴 스키마
+class BrandCardBenefitCreate(BaseModel):
+    """카드사 제휴 생성 요청"""
+    discount_policy_id: int
+    card_partner: str
+    cashback_rate: float
+    title: str
+    description: Optional[str] = None
+    valid_from: Optional[datetime] = None
+    valid_to: Optional[datetime] = None
+    is_active: bool = True
+
+
+class BrandCardBenefitUpdate(BaseModel):
+    """카드사 제휴 수정 요청"""
+    card_partner: Optional[str] = None
+    cashback_rate: Optional[float] = None
+    title: Optional[str] = None
+    description: Optional[str] = None
+    valid_from: Optional[datetime] = None
+    valid_to: Optional[datetime] = None
+    is_active: Optional[bool] = None
+
+
+class BrandCardBenefitResponse(BaseModel):
+    """카드사 제휴 응답"""
+    id: int
+    discount_policy_id: int
+    card_partner: str
+    cashback_rate: float
+    title: str
+    description: Optional[str] = None
+    valid_from: datetime
+    valid_to: datetime
+    is_active: bool
+    
+    class Config:
+        from_attributes = True
+
+
+class BrandCardBenefitListResponse(BaseModel):
+    """카드사 제휴 목록 응답"""
+    items: List[BrandCardBenefitResponse]
+    pagination: dict
+
+
+# 브랜드 프로모션 스키마
+class BrandPromoCreate(BaseModel):
+    """브랜드 프로모션 생성 요청"""
+    discount_policy_id: int
+    discount_rate: Optional[float] = None
+    discount_amount: Optional[int] = None
+    title: str
+    description: Optional[str] = None
+    valid_from: Optional[datetime] = None
+    valid_to: Optional[datetime] = None
+    is_active: bool = True
+
+
+class BrandPromoUpdate(BaseModel):
+    """브랜드 프로모션 수정 요청"""
+    discount_rate: Optional[float] = None
+    discount_amount: Optional[int] = None
+    title: Optional[str] = None
+    description: Optional[str] = None
+    valid_from: Optional[datetime] = None
+    valid_to: Optional[datetime] = None
+    is_active: Optional[bool] = None
+
+
+class BrandPromoResponse(BaseModel):
+    """브랜드 프로모션 응답"""
+    id: int
+    discount_policy_id: int
+    discount_rate: Optional[float] = None
+    discount_amount: Optional[int] = None
+    title: str
+    description: Optional[str] = None
+    valid_from: datetime
+    valid_to: datetime
+    is_active: bool
+    
+    class Config:
+        from_attributes = True
+
+
+class BrandPromoListResponse(BaseModel):
+    """브랜드 프로모션 목록 응답"""
+    items: List[BrandPromoResponse]
+    pagination: dict
+
+
+# 재고 할인 스키마
+class BrandInventoryDiscountCreate(BaseModel):
+    """재고 할인 생성 요청"""
+    discount_policy_id: int
+    inventory_level_threshold: int
+    discount_rate: float
+    title: str
+    description: Optional[str] = None
+    valid_from: Optional[datetime] = None
+    valid_to: Optional[datetime] = None
+    is_active: bool = True
+
+
+class BrandInventoryDiscountUpdate(BaseModel):
+    """재고 할인 수정 요청"""
+    inventory_level_threshold: Optional[int] = None
+    discount_rate: Optional[float] = None
+    title: Optional[str] = None
+    description: Optional[str] = None
+    valid_from: Optional[datetime] = None
+    valid_to: Optional[datetime] = None
+    is_active: Optional[bool] = None
+
+
+class BrandInventoryDiscountResponse(BaseModel):
+    """재고 할인 응답"""
+    id: int
+    discount_policy_id: int
+    inventory_level_threshold: int
+    discount_rate: float
+    title: str
+    description: Optional[str] = None
+    valid_from: datetime
+    valid_to: datetime
+    is_active: bool
+    
+    class Config:
+        from_attributes = True
+
+
+class BrandInventoryDiscountListResponse(BaseModel):
+    """재고 할인 목록 응답"""
+    items: List[BrandInventoryDiscountResponse]
+    pagination: dict
+
+
+# 선구매 할인 스키마
+class BrandPrePurchaseCreate(BaseModel):
+    """선구매 할인 생성 요청"""
+    discount_policy_id: int
+    event_type: EventTypeForPrePurchase
+    discount_rate: Optional[float] = None
+    discount_amount: Optional[int] = None
+    title: str
+    description: Optional[str] = None
+    pre_purchase_start: Optional[datetime] = None
+    valid_from: Optional[datetime] = None
+    valid_to: Optional[datetime] = None
+    is_active: bool = True
+
+
+class BrandPrePurchaseUpdate(BaseModel):
+    """선구매 할인 수정 요청"""
+    event_type: Optional[EventTypeForPrePurchase] = None
+    discount_rate: Optional[float] = None
+    discount_amount: Optional[int] = None
+    title: Optional[str] = None
+    description: Optional[str] = None
+    pre_purchase_start: Optional[datetime] = None
+    valid_from: Optional[datetime] = None
+    valid_to: Optional[datetime] = None
+    is_active: Optional[bool] = None
+
+
+class BrandPrePurchaseResponse(BaseModel):
+    """선구매 할인 응답"""
+    id: int
+    discount_policy_id: int
+    event_type: EventTypeForPrePurchase
+    discount_rate: Optional[float] = None
+    discount_amount: Optional[int] = None
+    title: str
+    description: Optional[str] = None
+    pre_purchase_start: Optional[datetime] = None
+    valid_from: datetime
+    valid_to: datetime
+    is_active: bool
+    
+    class Config:
+        from_attributes = True
+
+
+class BrandPrePurchaseListResponse(BaseModel):
+    """선구매 할인 목록 응답"""
+    items: List[BrandPrePurchaseResponse]
+    pagination: dict
+
+
+# 통합 할인 정책 상세 조회 스키마
+class DiscountPolicyDetailResponse(BaseModel):
+    """할인 정책 상세 조회 응답 (모든 유형 포함)"""
+    policy: DiscountPolicyResponse
+    card_benefits: List[BrandCardBenefitResponse]
+    promos: List[BrandPromoResponse]
+    inventory_discounts: List[BrandInventoryDiscountResponse]
+    pre_purchases: List[BrandPrePurchaseResponse]
+
+
+# 버전별 할인 정책 요약 스키마
+class VersionDiscountSummaryResponse(BaseModel):
+    """버전별 할인 정책 요약 응답"""
+    version_id: int
+    total_policies: int
+    policies_by_type: dict
+    total_card_benefits: int
+    total_promos: int
+    total_inventory_discounts: int
+    total_pre_purchases: int
+
+
+# 페이지네이션 공통 스키마
+class PaginationInfo(BaseModel):
+    """페이지네이션 정보"""
+    total: int
+    page: int
+    limit: int
+    total_pages: int
+    has_next: bool
+    has_prev: bool
+
+
+# 필터링 파라미터 스키마
+class DiscountPolicyFilterParams(BaseModel):
+    """할인 정책 필터링 파라미터"""
+    brand_id: Optional[int] = None
+    trim_id: Optional[int] = None
+    version_id: Optional[int] = None
+    policy_type: Optional[PolicyType] = None
+    is_active: Optional[bool] = None
+    page: int = 1
+    limit: int = 20
+    sort_by: str = "created_at"
+    order: str = "desc"
+
+
+class CardBenefitFilterParams(BaseModel):
+    """카드사 제휴 필터링 파라미터"""
+    policy_id: Optional[int] = None
+    card_partner: Optional[str] = None
+    is_active: Optional[bool] = None
+    page: int = 1
+    limit: int = 20
+    sort_by: str = "created_at"
+    order: str = "desc"
+
+
+class PromoFilterParams(BaseModel):
+    """브랜드 프로모션 필터링 파라미터"""
+    policy_id: Optional[int] = None
+    is_active: Optional[bool] = None
+    page: int = 1
+    limit: int = 20
+    sort_by: str = "created_at"
+    order: str = "desc"
+
+
+class InventoryDiscountFilterParams(BaseModel):
+    """재고 할인 필터링 파라미터"""
+    policy_id: Optional[int] = None
+    is_active: Optional[bool] = None
+    page: int = 1
+    limit: int = 20
+    sort_by: str = "created_at"
+    order: str = "desc"
+
+
+class PrePurchaseFilterParams(BaseModel):
+    """선구매 할인 필터링 파라미터"""
+    policy_id: Optional[int] = None
+    event_type: Optional[EventTypeForPrePurchase] = None
+    is_active: Optional[bool] = None
+    page: int = 1
+    limit: int = 20
+    sort_by: str = "created_at"
+    order: str = "desc"
